@@ -1,7 +1,94 @@
 # Note from a Human
 Github Copilot created the tests and the bulk of this read README, but I wrote the TLP parser. My original version used variable pointers to know where to copy data read from the TLP buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
 
-# TLVParser
+# TLV-Parser
+
+T-L-V (Type-Length-Value) it a way to encode types of variable values (like an int, a double, a string, etc.) into a buffer, and load them back into variables later.
+
+Data is represented by a numeric type, followed by a numeric length of that type, then the actual data. When parsing a buffer of data in this TLV format, the parsing routine can easily skip over any types it does not recognize. This means as new types or added, older code can still parse the types it knows while skipping over newer unknown types.
+
+Here is the Wikipedia entry about TLV:
+
+https://en.wikipedia.org/wiki/Type–length–value
+
+I originally wrote a TLV parser some years ago at a job where we had been using a fixed structure to store device configuration in an EEPROM. If we wanted to change that data (adding new items or removing/changing existing ones), that would break compatibility with all the tools that expected the data to be in a specific format. For example
+
+```
+typedef struct
+{
+    uint8_t default_color;
+    uint8_t default_mode;
+    uint16_t default_value;
+} configuration_struct_t;
+```
+
+If that data was written out to a buffer (for saving to an EEPROM, or a file, or sending across a network), it might be packed together so you have the bytes like:
+
+```
+ color mode     value
+ ----  ----  ----------
+[0x01][0x02][0x11][0x22]
+```
+
+When loading that data, it would expect the first byte to be the default color, the second byte to be the default mode, and the third and fourth bytes to be the default value. If default mode needed to be changed to a uint16_t, needing two bytes, the old parser would be unable to properly process this data. Such changes require updating both the writing and parsing routines. (Thus, "a breaking change".)
+
+But with TLVs, the data is encoded with extra "type" and "length" values. For this implemention I used bytes for those since I did not need more than 255 variables, but it could be easily changed to use a uint16_2 or even uint32_t. If any data was expected to be larger than 255 bytes, the length type could also be increased.
+
+But I digress.
+
+Using a TLV method, the variables would have type numbers that writer and parse would both know about:
+
+```
+Types
+[01] - uint8_t default_color
+[02] - uint8_t default_mode
+[03] - uint16_t default_value
+```
+
+Data would be stored with that type value, followed by the length of the data, then the actual data itself. For the above configuration, it might look like:
+
+```
+default_color = 0x42;
+default_mode = 0x99;
+default_value = 0x1234;
+
+...
+
+[0x01][0x01][0x42][0x02][0x01][0x99][0x03][0x12][0x34]
+```
+
+Breaking it apart may make it easier to see:
+
+```
+[0x01] - type 1, whatever that is
+[0x01] - one byte size
+[0x42] - the value that goes into that byte
+
+[0x02] - type 2, whatever that is
+[0x01] - one byte in size
+[0x99] - the value that goes into that byte
+
+[0x03] - type 3, whatever that is
+[0x02] - two bytes in size
+[0x12] - the values that go into those two bytes
+[0x34] - 
+```
+
+If both writer and parser know about types 1, 2 and 3, they can write and parse these values. But if the writer was updated with a new type 4, such as a 4-byte floating point variable, that would be an unknown type to the reader. The reader would get to the type 4, not know what to do with it, and just skip past "length" bytes and try to parse whatever is after it.
+
+This allows new items to be added to an EEPROM configuration without breaking compatibility. A parser just skips things it does not know what to do with.
+
+If you are unfamiliar with TLVs, hopefully this helps make some sense of it.
+
+Anyway, the goal of this implementation was to make is super simple. You create variables (standalone or as part of a structure) then define a special TLP table that is used to know where each of those variables is in memory, as well as its type and size. The parsing routine can just be handed a buffer and a lookup table, then it will parse the buffer and copy the values into the appropriate spot where the variable(s) are in memory.
+
+The original version required the variables to exist in memory before the TLV table could be declared, which worked well for my intended use.
+
+The new version requires variables to be elements of a structure, and the table contains offsets (from start of structure to wherever the element is) to know where to copy value data to. This means you can declare the tables based on the structure, rather than having to have variables in existence first.
+
+Confusing? Well, read the rest of this (mostly written by the robot) and see if it helps. I will try to add some examples to this repo when I get a moment.
+
+# Description #
 
 Lightweight C11 TLV (Type-Length-Value) parser/writer with CRC-16/XMODEM validation.
 
