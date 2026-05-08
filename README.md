@@ -253,6 +253,33 @@ my_struct_t out = { 0 };
 size_t parsed = tlv_parse_struct (buffer, (unsigned int)written, &out, table);
 ```
 
+### Pointer Table Example
+
+```c
+// These must remain in scope for the duration of the tlv_write_ptr and
+// tlv_parse_ptr calls. If they go out of scope, then the pointers in the
+// table will be invalid. Use global or static variables if needed, or
+// make sure you do it all within the same function scope.
+uint8_t  byte = 0x11;
+uint16_t word = 0x2222;
+uint32_t dword = 0x33333333;
+char     string[6] = "ABCDE";
+
+const tlv_ptr_struct_t table[] =
+{
+    TLVPTRENTRY(1, byte),
+    TLVPTRENTRY(2, word),
+    TLVPTRENTRY(3, dword),
+    TLVPTRENTRY(4, string),
+    TLVPTRENTRYEND
+};
+
+uint8_t buffer[64] = { 0 };
+size_t written = tlv_write_ptr (buffer, sizeof(buffer), table);
+
+size_t parsed = tlv_parse_ptr (buffer, (unsigned int)written, table);
+```
+
 ## Test Coverage Summary
 
 Both pointer and struct suites cover:
