@@ -1,13 +1,12 @@
 #ifndef CRC_H
 #define CRC_H
 
-// 0 = No debug messages, 1 = Debug messages, 2 = Even more debug messages.
-#define DEBUG_CRC 0
-
 /*---------------------------------------------------------------------------*/
-// Includes
+// Include Files
 /*---------------------------------------------------------------------------*/
+// Compiler headers.
 #include <stddef.h> // size_t
+#include <stdint.h> // uint8_t, uint16_t
 
 
 /*---------------------------------------------------------------------------*/

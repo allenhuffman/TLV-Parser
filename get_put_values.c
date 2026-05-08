@@ -3,14 +3,17 @@
 /*---------------------------------------------------------------------------*/
 // Include Files
 /*---------------------------------------------------------------------------*/
+// Compiler headers.
 #include <stdint.h>
 #include <string.h> // for memset(), memcpy()
 
+// This file's header.
 #include "get_put_values.h"
 
 /*---------------------------------------------------------------------------*/
 // Functions
 /*---------------------------------------------------------------------------*/
+
 void get_data (const uint8_t **ptr, void *data_ptr, unsigned int data_size)
 {
     memcpy(data_ptr, *ptr, data_size);

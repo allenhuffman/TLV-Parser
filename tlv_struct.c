@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*/
-// Includes
+// Include Files
 /*---------------------------------------------------------------------------*/
 // Compiler headers.
 #include <inttypes.h> // uintptr_t
@@ -15,15 +15,21 @@
 #include "crc.h"
 #include "get_put_values.h"
 
+/*---------------------------------------------------------------------------*/
+// Constants
+/*---------------------------------------------------------------------------*/
 // 0 = No debug messages, 1 = Debug messages, 2 = Even more debug messages.
 #define DEBUG_TLV 0
 
 #if (DEBUG_TLV > 0)
-#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+    #define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 #else
-#define DEBUG_PRINTF(...)
+    #define DEBUG_PRINTF(...)
 #endif
 
+/*---------------------------------------------------------------------------*/
+// Functions
+/*---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------*/
 // Read and parse TLV data from a buffer and copy into a structure.

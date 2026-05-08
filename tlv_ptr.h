@@ -1,10 +1,10 @@
 #ifndef TLV_PTR_H
 #define TLV_PTR_H
 
-
 /*---------------------------------------------------------------------------*/
-// Includes
+// Include Files
 /*---------------------------------------------------------------------------*/
+// Compiler headers.
 #include <stddef.h>
 #include <stdbool.h>
 

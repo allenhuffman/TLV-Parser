@@ -1,10 +1,16 @@
 /*---------------------------------------------------------------------------*/
 // Includes
 /*---------------------------------------------------------------------------*/
+// Compiler headers.
 #include <stddef.h> // size_t
 #include <stdint.h> // uint16_t
 
+// This file's header.
 #include "crc.h"
+
+/*---------------------------------------------------------------------------*/
+// Functions
+/*---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------*/
 // Calculate CRC over a range of bytes.
@@ -83,6 +89,28 @@ uint16_t crc_bytes (const uint8_t *inBytes, unsigned int length, uint16_t crc_Db
         for (byte_counter = 0; byte_counter < length; byte_counter++)
         {
             crc_Dbyte = crc (inBytes[byte_counter], crc_Dbyte);
+        }
+    }
+
+    return crc_Dbyte;
+}
+
+/*---------------------------------------------------------------------------*/
+// @brief  Calculate CRC over a null-terminated string.
+//
+// @param  inString - pointer to a null-terminated string.
+// @param  crc_Dbyte - current CRC value.
+//
+// @return uint16_t - new CRC value.
+/*---------------------------------------------------------------------------*/
+uint16_t crc_string (const char *inString, uint16_t crc_Dbyte)
+{
+    if (inString != NULL)
+    {
+        while (*inString != '\0')
+        {
+            crc_Dbyte = crc ((uint8_t)*inString, crc_Dbyte);
+            inString++;
         }
     }
 
