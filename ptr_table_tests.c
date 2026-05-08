@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "crc.h"
-#include "tlv.h"
+#include "tlv_ptr.h"
 
 #include "ptr_table_tests.h"
 

@@ -1,5 +1,5 @@
 # Note from a Human
-Github Copilot created the tests and the bulk of this read README, but I wrote the TLP parser. My original version used variable pointers to know where to copy data read from the TLP buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
+Github Copilot created the tests and the bulk of this README, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
 
 # TLV-Parser
 
@@ -80,7 +80,7 @@ This allows new items to be added to an EEPROM configuration without breaking co
 
 If you are unfamiliar with TLVs, hopefully this helps make some sense of it.
 
-Anyway, the goal of this implementation was to make is super simple. You create variables (standalone or as part of a structure) then define a special TLP table that is used to know where each of those variables is in memory, as well as its type and size. The parsing routine can just be handed a buffer and a lookup table, then it will parse the buffer and copy the values into the appropriate spot where the variable(s) are in memory.
+Anyway, the goal of this implementation was to make it super simple. You create variables (standalone or as part of a structure) then define a special TLV table that is used to know where each of those variables is in memory, as well as its type and size. The parsing routine can just be handed a buffer and a lookup table, then it will parse the buffer and copy the values into the appropriate spot where the variable(s) are in memory.
 
 The original version required the variables to exist in memory before the TLV table could be declared, which worked well for my intended use.
 
@@ -97,6 +97,18 @@ This project supports two data mapping modes:
 - Pointer tables: map TLV types directly to variable pointers.
 - Struct offset tables: map TLV types to fields in a struct using offsets.
 
+## Architecture
+
+The code is split by API style:
+
+- Pointer API implementation: `tlv_ptr.c` + `tlv_ptr.h`
+- Struct-offset API implementation: `tlv_struct.c` + `tlv_struct.h`
+
+Shared helpers are:
+
+- CRC support: `crc.c` + `crc.h`
+- Buffer get/put helpers: `get_put_values.c` + `get_put_values.h`
+
 ## Features
 
 - Read and write TLV payloads with a terminator (`00 00`) and trailing CRC-16.
@@ -108,8 +120,10 @@ This project supports two data mapping modes:
 
 ## File Layout
 
-- `tlv.h`: Public API, TLV table types, helper macros.
-- `tlv.c`: Parser/writer implementation for pointer and struct modes.
+- `tlv_ptr.h`: Pointer-table API, macros, and typedefs.
+- `tlv_ptr.c`: Pointer-table parser/writer implementation.
+- `tlv_struct.h`: Struct-offset API, macros, and typedefs.
+- `tlv_struct.c`: Struct-offset parser/writer implementation.
 - `crc.c`, `crc.h`: CRC-16/XMODEM routines.
 - `get_put_values.c`, `get_put_values.h`: Byte/word read-write helpers.
 - `ptr_table_tests.c`: Pointer-table test suite.
@@ -142,6 +156,8 @@ make clean
 ```
 
 ## Public API
+
+From `tlv_ptr.h` and `tlv_struct.h`:
 
 ```c
 size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
@@ -201,7 +217,7 @@ tlv_ptr_struct_t table[] =
 
 uint8_t buffer[64] = { 0 };
 
-// Write variables out to TLP buffer.
+// Write variables out to TLV buffer.
 size_t written = tlv_write_ptr (buffer, sizeof(buffer), table);
 
 // Parse TLV buffer and load data into variables.
@@ -257,7 +273,7 @@ Both pointer and struct suites cover:
 ## Notes
 
 - CRC bytes are stored little-endian in the generated/test buffers.
-- Debug output can be controlled via `DEBUG_TLV` in `tlv.h`.
+- Debug output can be controlled via `DEBUG_TLV` in `tlv_ptr.h` and `tlv_struct.h`.
 
 ## License
 

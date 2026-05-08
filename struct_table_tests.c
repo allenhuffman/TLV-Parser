@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "crc.h"
-#include "tlv.h"
+#include "tlv_struct.h"
 
 #include "struct_table_tests.h"
 
