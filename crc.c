@@ -89,4 +89,4 @@ uint16_t crc_bytes (const uint8_t *inBytes, unsigned int length, uint16_t crc_Db
     return crc_Dbyte;
 }
 
-// End of File Name: crc.c
+// End of crc.c
