@@ -9,7 +9,7 @@
 /*---------------------------------------------------------------------------*/
 // Calculate CRC over a range of bytes.
 /*---------------------------------------------------------------------------*/
-uint16_t crc_calculate (void *buffer, size_t size)
+uint16_t crc_calculate (const void *buffer, size_t size)
 {
     uint16_t crc = 0;
 
@@ -74,7 +74,7 @@ uint16_t crc (uint8_t inByte, uint16_t crc_Dbyte)
 //
 // @return uint16_t - new CRC value.
 /*---------------------------------------------------------------------------*/
-uint16_t crc_bytes (uint8_t *inBytes, unsigned int length, uint16_t crc_Dbyte)
+uint16_t crc_bytes (const uint8_t *inBytes, unsigned int length, uint16_t crc_Dbyte)
 {
     if (inBytes != NULL)
     {

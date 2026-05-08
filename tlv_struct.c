@@ -28,15 +28,15 @@
 /*---------------------------------------------------------------------------*/
 // Read and parse TLV data from a buffer and copy into a structure.
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_struct (void *data_ptr, unsigned int data_size,
+size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                          void *struct_ptr,
                          const tlv_offset_struct_t *tlv_table_ptr)
 {
     size_t          bytes_consumed = 0;
     unsigned int    type = 0;
     unsigned int    length = 0;
-    uint8_t         *end_ptr = NULL;
-    uint8_t         *ptr = NULL;
+    const uint8_t   *end_ptr = NULL;
+    const uint8_t   *ptr = NULL;
     unsigned int    table_entry = 0;
     bool            keep_scanning = true;
 
@@ -50,8 +50,8 @@ size_t tlv_parse_struct (void *data_ptr, unsigned int data_size,
 
     if ((NULL != data_ptr) && (NULL != struct_ptr) && (NULL != tlv_table_ptr))
     {
-        ptr = (uint8_t *)data_ptr;
-        end_ptr = (uint8_t *)data_ptr + data_size;
+        ptr = (const uint8_t *)data_ptr;
+        end_ptr = (const uint8_t *)data_ptr + data_size;
 
         while ((ptr + 2) <= end_ptr)
         {
@@ -63,12 +63,12 @@ size_t tlv_parse_struct (void *data_ptr, unsigned int data_size,
                 if ((ptr + sizeof(uint16_t)) <= end_ptr)
                 {
                     uint16_t calculated_crc = crc_calculate (data_ptr,
-                                           (size_t)(ptr - (uint8_t *)data_ptr));
+                                           (size_t)(ptr - (const uint8_t *)data_ptr));
                     uint16_t crc = get_u16(&ptr);
 
                     if (crc == calculated_crc)
                     {
-                        bytes_consumed = (size_t)(ptr - (uint8_t *)data_ptr);
+                        bytes_consumed = (size_t)(ptr - (const uint8_t *)data_ptr);
                     }
                     else
                     {
@@ -93,8 +93,8 @@ size_t tlv_parse_struct (void *data_ptr, unsigned int data_size,
 
         if (bytes_consumed != 0)
         {
-            ptr = (uint8_t *)data_ptr;
-            end_ptr = (uint8_t *)data_ptr + data_size;
+            ptr = (const uint8_t *)data_ptr;
+            end_ptr = (const uint8_t *)data_ptr + data_size;
             keep_scanning = true;
 
             while ((ptr + 2) <= end_ptr)

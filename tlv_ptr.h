@@ -32,8 +32,8 @@ typedef struct
 /*---------------------------------------------------------------------------*/
 // Prototypes
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
-                      tlv_ptr_struct_t *tlv_table_ptr);
+size_t tlv_parse_ptr (const void *data_ptr, unsigned int data_size,
+                      const tlv_ptr_struct_t *tlv_table_ptr);
 
 size_t tlv_write_ptr (void *dest_ptr, unsigned int dest_size,
                       const tlv_ptr_struct_t *tlv_table_ptr);

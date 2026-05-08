@@ -32,7 +32,7 @@ typedef struct
 /*---------------------------------------------------------------------------*/
 // Prototypes
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_struct (void *data_ptr, unsigned int data_size,
+size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                          void *struct_ptr,
                          const tlv_offset_struct_t *tlv_table_ptr);
 

@@ -27,14 +27,14 @@
 /*---------------------------------------------------------------------------*/
 // Read and parse TLV data from a buffer and copy into variables.
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
-                       tlv_ptr_struct_t *tlv_table_ptr)
+size_t tlv_parse_ptr (const void *data_ptr, unsigned int data_size,
+                      const tlv_ptr_struct_t *tlv_table_ptr)
 {
     size_t          bytes_consumed = 0;
     unsigned int    type = 0;
     unsigned int    length = 0;
-    uint8_t         *end_ptr = NULL;
-    uint8_t         *ptr = NULL;
+    const uint8_t   *end_ptr = NULL;
+    const uint8_t   *ptr = NULL;
     unsigned int    table_entry = 0;
     bool            keep_scanning = true;
 
@@ -49,8 +49,8 @@ size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
         // To avoid parsing corrupt data, we first need to scan and find the
         // end of the TLV data and then check the CRC.
 
-        ptr = (uint8_t *)data_ptr; // Start of data.
-        end_ptr = (uint8_t *)data_ptr + data_size;
+        ptr = (const uint8_t *)data_ptr; // Start of data.
+        end_ptr = (const uint8_t *)data_ptr + data_size;
 
         while ((ptr + 2) <= end_ptr) // Room for TL header.
         {
@@ -67,14 +67,14 @@ size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
                 {
                     // Calculate CRC over the used memory.
                     uint16_t calculatedCrc = crc_calculate (data_ptr,
-                                           (size_t)(ptr - (uint8_t *)data_ptr));
+                                           (size_t)(ptr - (const uint8_t *)data_ptr));
 
                     // Get the 16-bit CRC stored after the used memory.
                     uint16_t crc = get_u16(&ptr);
 
                     if (crc == calculatedCrc) // Verify CRC.
                     {
-                        bytes_consumed = (size_t)(ptr - (uint8_t *)data_ptr);
+                        bytes_consumed = (size_t)(ptr - (const uint8_t *)data_ptr);
                     }
                     else
                     {
@@ -103,8 +103,8 @@ size_t tlv_parse_ptr (void *data_ptr, unsigned int data_size,
         if (0 != bytes_consumed)
         {
             // Reset so we can scan and parse.
-            ptr = (uint8_t *)data_ptr; // Start of data.
-            end_ptr = (uint8_t *)data_ptr + data_size;
+            ptr = (const uint8_t *)data_ptr; // Start of data.
+            end_ptr = (const uint8_t *)data_ptr + data_size;
             keep_scanning = true;
 
             while ((ptr + 2) <= end_ptr) // Room for TL header.
