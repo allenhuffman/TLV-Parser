@@ -42,7 +42,7 @@ typedef struct
 {
    uint8_t  type;
    uint8_t  length;
-   size_t   offset;
+   uint16_t offset; // or uint8_t if not struct is > 255 bytes.
 } tlv_offset_struct_t;
 
 
