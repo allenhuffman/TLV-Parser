@@ -1,3 +1,20 @@
+/*---------------------------------------------------------------------------*/
+// Sub-Etha Software's TLV Parser (variable pointer version)
+// By Allen C. Huffman
+// www.subethasoftware.com
+//
+// This is a simple TLV (Type-Length-Value) parser that can be used to read
+// and write TLV data to and from buffers.
+//
+// FILE HISTORY:
+//
+// 2026-05-08 allenh - Added more comments.
+//
+// TODO:
+//
+// TOFIX:
+//
+/*---------------------------------------------------------------------------*/
 #ifndef TLV_PTR_H
 #define TLV_PTR_H
 
@@ -6,7 +23,7 @@
 /*---------------------------------------------------------------------------*/
 // Compiler headers.
 #include <stddef.h>
-#include <stdbool.h>
+#include <stdint.h>
 
 
 /*---------------------------------------------------------------------------*/
@@ -23,9 +40,9 @@
 // variables that will be loaded with value data.
 typedef struct
 {
-   unsigned int   type;
-   unsigned int   length;
-   void           *value_ptr;
+   uint8_t  type;
+   uint8_t  length;
+   void     *value_ptr;
 } tlv_ptr_struct_t;
 
 

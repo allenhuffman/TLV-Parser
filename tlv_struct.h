@@ -1,3 +1,20 @@
+/*---------------------------------------------------------------------------*/
+// Sub-Etha Software's TLV Parser (structure offset version)
+// By Allen C. Huffman
+// www.subethasoftware.com
+//
+// This is a simple TLV (Type-Length-Value) parser that can be used to read
+// and write TLV data to and from buffers.
+//
+// FILE HISTORY:
+//
+// 2026-05-08 allenh - Added more comments.
+//
+// TODO:
+//
+// TOFIX:
+//
+/*---------------------------------------------------------------------------*/
 #ifndef TLV_STRUCT_H
 #define TLV_STRUCT_H
 
@@ -5,8 +22,8 @@
 // Include Files
 /*---------------------------------------------------------------------------*/
 // Compiler headers.
-#include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 
 /*---------------------------------------------------------------------------*/
@@ -19,13 +36,13 @@
 /*---------------------------------------------------------------------------*/
 // Typedefs
 /*---------------------------------------------------------------------------*/
-// This structure is used to define a TLV table that contains offsets to where
-// elements are within a structure that will be loaded with value data.
+// This structure is used to define a TLV table that contains offsets to
+// where elements are within a structure that will be loaded with value data.
 typedef struct
 {
-   unsigned int   type;
-   unsigned int   length;
-   size_t         offset;
+   uint8_t  type;
+   uint8_t  length;
+   size_t   offset;
 } tlv_offset_struct_t;
 
 
