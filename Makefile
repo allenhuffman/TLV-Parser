@@ -1,3 +1,4 @@
+# Created by Github Copilot.
 CC ?= cc
 CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -O0 -g
 LDFLAGS ?=
