@@ -80,11 +80,11 @@ uint16_t crc (uint8_t inByte, uint16_t crc_Dbyte)
 //
 // @return uint16_t - new CRC value.
 /*---------------------------------------------------------------------------*/
-uint16_t crc_bytes (const uint8_t *inBytes, unsigned int length, uint16_t crc_Dbyte)
+uint16_t crc_bytes (const uint8_t *inBytes, size_t length, uint16_t crc_Dbyte)
 {
     if (inBytes != NULL)
     {
-        unsigned int byte_counter = 0;
+        size_t byte_counter = 0;
 
         for (byte_counter = 0; byte_counter < length; byte_counter++)
         {

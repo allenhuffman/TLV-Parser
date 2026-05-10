@@ -119,10 +119,10 @@ static void run_struct_write_tests (void)
         hex_dump ("struct write buffer", buffer_large, bytes_written);
 
         expect_true ("struct write exact-fit succeeds",
-                     tlv_write_struct (buffer_large, bytes_written, &message, struct_table) == bytes_written);
+                     tlv_write_struct (buffer_large, (unsigned int)bytes_written, &message, struct_table) == bytes_written);
 
         expect_true ("struct write exact-fit-1 fails",
-                     tlv_write_struct (buffer_large, bytes_written - 1, &message, struct_table) == 0);
+                     tlv_write_struct (buffer_large, (unsigned int)(bytes_written - 1), &message, struct_table) == 0);
     }
 }
 

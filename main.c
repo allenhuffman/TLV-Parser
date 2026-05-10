@@ -1,4 +1,22 @@
 /*---------------------------------------------------------------------------*/
+// Sub-Etha Software's TLV Parser (test main)
+// By Allen C. Huffman
+// www.subethasoftware.com
+//
+// This is a simple TLV (Type-Length-Value) parser that can be used to read
+// and write TLV data to and from buffers.
+//
+// FILE HISTORY:
+//
+// 2026-05-08 allenh - Added this header.
+//
+// TODO:
+//
+// TOFIX:
+//
+/*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*/
 // Include Files
 /*---------------------------------------------------------------------------*/
 // Compiler headers.
@@ -21,3 +39,5 @@ int main (void)
 
     return 0;
 }
+
+// End of main.c

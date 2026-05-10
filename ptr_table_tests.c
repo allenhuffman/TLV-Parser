@@ -105,10 +105,10 @@ static void run_ptr_table_write_tests (void)
         hex_dump ("write buffer", buffer_large, bytes_written);
 
         expect_true ("write exact-fit succeeds",
-                     tlv_write_ptr (buffer_large, bytes_written, tlv_table) == bytes_written);
+                     tlv_write_ptr (buffer_large, (unsigned int)bytes_written, tlv_table) == bytes_written);
 
         expect_true ("write exact-fit-1 fails",
-                     tlv_write_ptr (buffer_large, bytes_written - 1, tlv_table) == 0);
+                     tlv_write_ptr (buffer_large, (unsigned int)(bytes_written - 1), tlv_table) == 0);
     }
 }
 

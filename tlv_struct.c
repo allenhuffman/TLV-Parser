@@ -315,7 +315,7 @@ size_t tlv_write_struct (void *dest_ptr, unsigned int dest_size,
             put_u8 (&ptr, tlv_table_ptr[table_entry].type);
             put_u8 (&ptr, tlv_table_ptr[table_entry].length);
             put_data (&ptr,
-                      (void *)((const uint8_t *)struct_ptr + tlv_table_ptr[table_entry].offset),
+                      ((const uint8_t *)struct_ptr + tlv_table_ptr[table_entry].offset),
                       tlv_table_ptr[table_entry].length);
 
             table_entry++;
