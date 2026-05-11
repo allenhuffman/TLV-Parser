@@ -11,10 +11,7 @@
  * Embedded C Coding Standard (Barr-C).
  *
  * @section history File History
- * - 2026-XX-XX allenh - Created.
- *
- * @todo Add module-specific functionality.
- * @todo Document any API-specific edge cases.
+ * - 2026-05-08 allenh - Updated to Barr-C style.
  */
 #ifndef TLV_PTR_H
 #define TLV_PTR_H

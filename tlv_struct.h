@@ -11,10 +11,7 @@
  * Embedded C Coding Standard (Barr-C).
  *
  * @section history File History
- * - 2026-XX-XX allenh - Created.
- *
- * @todo Add module-specific functionality.
- * @todo Document any API-specific edge cases.
+ * - 2026-05-08 allenh - Updated to Barr-C style.
  */
 #ifndef TLV_STRUCT_H
 #define TLV_STRUCT_H
@@ -26,6 +23,7 @@
 
 
 /* Public macros: all #define items, constants and function-like macros */
+
 #define TLVSTRUCTENTRY(n,s,v) { n, sizeof(((s *)0)->v), offsetof(s, v) }
 #define TLVSTRUCTENTRYEND     { 0, 0, 0 }
 
