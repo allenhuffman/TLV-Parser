@@ -12,10 +12,9 @@
  * Embedded C Coding Standard (Barr-C).
  *
  * @section history File History
- * - 2026-XX-XX allenh - Created.
+ * - 2026-05-08 allenh - Updated to sync with new tlv_struct.c version.
  *
- * @todo Add module-specific functionality.
- * @todo Document any API-specific edge cases.
+ * @todo Consider: Add ability to have same type map to different lengths.
  */
 
 /* System headers */
@@ -311,7 +310,7 @@ tlv_write_ptr (void * p_dest,
             if ((p_write + entry_size) > p_end)
             {
 #if (DEBUG_TLV > 0)
-                DEBUG_PRINTF ("EEPROM area too small to fit all.\n");
+                DEBUG_PRINTF ("Destination area too small to fit all.\n");
 #endif
                 bytes_written = 0;
 

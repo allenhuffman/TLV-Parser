@@ -12,10 +12,9 @@
  * Embedded C Coding Standard (Barr-C).
  *
  * @section history File History
- * - 2026-XX-XX allenh - Created.
+ * - 2026-05-08 allenh - Created, based on original tlv_ptr.c version.
  *
- * @todo Add module-specific functionality.
- * @todo Document any API-specific edge cases.
+ * @todo Consider: Add ability to have same type map to different lengths.
  */
 
 /* System headers */
@@ -149,7 +148,7 @@
 
             // Otherwise, move pointer forward length bytes, skipping the data.
             p_read += length;
-        } // end of while ((p_write + 2) <= p_end)
+        } // end of while ((p_read + 2) <= p_end)
 
         // Done scanning, but proceed only if bytes consumed is non-zero.
         if (0 != bytes_consumed)
@@ -260,7 +259,7 @@
 
                 // Otherwise, move forward in buffer by length bytes.
                 p_read += length;
-            } // end of while ((p_write + 2) <= end_ptr)
+            } // end of while ((p_read + 2) <= p_end)
         } // end of if (0 != bytes_consumed)
     } // end of if ((NULL != data_ptr) . . .
 
@@ -291,8 +290,7 @@ tlv_write_struct (void * p_dest,
     DEBUG_PRINTF ("tlv_write_struct (0x%x, %u, 0x%x, 0x%x)\r\n",
                   (unsigned int)(uintptr_t)p_dest,
                   dest_size, (unsigned int)(uintptr_t)p_tlv_table,
-                  (unsigned int)(uintptr_t)p_struct,
-);
+                  (unsigned int)(uintptr_t)p_struct);
 #endif
 
     if ((NULL != p_dest) && (NULL != p_tlv_table) && (NULL != p_struct))
