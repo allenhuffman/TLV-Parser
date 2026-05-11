@@ -277,7 +277,7 @@ Both pointer and struct suites cover:
 ## Notes
 
 - CRC bytes are stored little-endian in the generated/test buffers.
-- Debug output can be controlled via `DEBUG_TLV` in `tlv_ptr.h` and `tlv_struct.h`.
+- Debug output can be controlled via `DEBUG_TLV` in `tlv_ptr.c` and `tlv_struct.c`.
 
 ## License
 
