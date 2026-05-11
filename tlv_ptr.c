@@ -106,17 +106,17 @@ size_t tlv_parse_ptr (const void * p_buf,
                 }
                 else
                 {
-                    // Calculate CRC over the used memory.
+                    // Calculate CRC over buffer up to this point.
                     uint16_t calculated_crc = crc_calculate (p_buf,
                         (size_t)(p_read - (const uint8_t *)p_buf));
-
+                    
                     // Get 2-byte CRC from buffer.
                     uint16_t crc = get_u16 (&p_read);
 
                     // If it matches, update bytes_consumed value.
                     if (crc == calculated_crc)
                     {
-                        bytes_consumed = (size_t)(p_read -
+                        bytes_consumed = (size_t)(p_read - 
                             (const uint8_t *)p_buf);
                     }
                     else
@@ -138,7 +138,7 @@ size_t tlv_parse_ptr (const void * p_buf,
             {
                 // ...data is corrupt or invalid. Set bytes consumed to 0.
                 bytes_consumed = 0;
-
+                
                 // Exit out of byte scanning loop.
                 break;
             }
@@ -153,10 +153,10 @@ size_t tlv_parse_ptr (const void * p_buf,
             // Now we scan the validated buffer again and try to load data.
             bool keep_scanning = true;
 
-            // Reset p_buf to start of buffer.
+            // Reset pointer to start of buffer.
             p_read = (const uint8_t *)p_buf;
 
-            // Reset p_end to end of buffer.
+            // Reset end pointer to end of buffer.
             p_end = (const uint8_t *)p_buf + buf_size;
 
             // Must have at least 3 more bytes to parse before the end of buffer.
@@ -185,14 +185,14 @@ size_t tlv_parse_ptr (const void * p_buf,
 #endif
                     // ...data is corrupt or invalid. Set bytes consumed to 0.
                     bytes_consumed = 0;
-
+                    
                     // Exit out of byte scanning loop #2.
                     break;
                 }
 
                 // Scan through TLV table starting with the first entry.
                 unsigned int table_entry = 0;
-
+                
                 // Scan as long as table has non-zero type and length.
                 while ((true == keep_scanning) && 
                        (0 != p_tlv_table[table_entry].type) &&
@@ -201,10 +201,10 @@ size_t tlv_parse_ptr (const void * p_buf,
 #if (DEBUG_TLV > 0)
                     type_found = false;
 #endif
-                    // If table entry type matches type read from buffer...
+                    // Compare table type with read type.
                     if (p_tlv_table[table_entry].type == type)
                     {
-                        // ...and entry length matches length read from buffer.
+                        // Compare table length with read length.
                         if (p_tlv_table[table_entry].length == length)
                         {
                             // Copy length bytes from buffer into variable
@@ -227,17 +227,17 @@ size_t tlv_parse_ptr (const void * p_buf,
                             // its expected length. If not, parse no further.
                             // Something is clearly wrong.
                             keep_scanning = false;
-
+                            
                             bytes_consumed = 0;
                         }
 
                         // Exit byte scanning loop #2.
                         break;
-                    } // end of if (p_tlv_table[table_entry].type  . . .
+                    } // end of if (p_tlv_table[table_entry].type == type)
 
                     // Move to next table entry.
                     table_entry++;
-                } // end of while (NULL != p_tlv_table[table_entry].p_value . . .
+                } // end of while ((true == keep_scanning)
 
 #if (DEBUG_TLV > 0)
                 if ((true == keep_scanning) && (true != type_found))
@@ -268,8 +268,9 @@ size_t tlv_parse_ptr (const void * p_buf,
 /*---------------------------------------------------------------------------*/
 // Write variables in the TLV structure to a TLV buffer.
 /*---------------------------------------------------------------------------*/
-size_t tlv_write_ptr (void *p_dest, unsigned int dest_size,
-                       const tlv_ptr_entry_t *p_tlv_table)
+size_t tlv_write_ptr (void * p_dest,
+                      unsigned int dest_size,
+                      const tlv_ptr_entry_t * p_tlv_table)
 {
     size_t bytes_written = 0;
 
@@ -281,21 +282,24 @@ size_t tlv_write_ptr (void *p_dest, unsigned int dest_size,
 
     if ((NULL != p_dest) && (NULL != p_tlv_table))
     {
-        uint8_t *       p_write     = NULL;
-        uint8_t *       p_end       = NULL;
-        unsigned int    table_entry = 0;
+        uint8_t      * p_write     = NULL;
+        uint8_t      * p_end       = NULL;
+        unsigned int   table_entry = 0;
 
         p_write = (uint8_t *)p_dest;
         p_end = (uint8_t *)p_dest + dest_size;
 
-        while (NULL != p_tlv_table[table_entry].p_value)
+		// While table entry is valid (type and length non-zero).
+        while ((0 != p_tlv_table[table_entry].type) &&
+               (0 != p_tlv_table[table_entry].length))
         {
             size_t entry_size = sizeof(uint8_t) + sizeof(uint8_t) +
                                 p_tlv_table[table_entry].length;
 
 #if (DEBUG_TLV > 0)
             DEBUG_PRINTF ("%u. %u,%u\r\n", table_entry,
-                          p_tlv_table[table_entry].type, p_tlv_table[table_entry].length);
+                          p_tlv_table[table_entry].type,
+                          p_tlv_table[table_entry].length);
 #endif
 
             if ((p_write + entry_size) > p_end)
@@ -310,7 +314,11 @@ size_t tlv_write_ptr (void *p_dest, unsigned int dest_size,
 
             put_u8 (&p_write, p_tlv_table[table_entry].type);
             put_u8 (&p_write, p_tlv_table[table_entry].length);
-            put_data (&p_write, p_tlv_table[table_entry].p_value, p_tlv_table[table_entry].length);
+            put_data (&p_write,
+			          p_tlv_table[table_entry].p_value,
+					  p_tlv_table[table_entry].length);
+
+            bytes_written = bytes_written + TLV_HEADER_SIZE + p_tlv_table[table_entry].length;
 
             table_entry++;
         }
@@ -331,8 +339,10 @@ size_t tlv_write_ptr (void *p_dest, unsigned int dest_size,
 
                 // Add the 16-bit CRC at the end.
                 put_u16 (&p_write, crc);
+				
+				bytes_written = bytes_written + TLV_HEADER_SIZE + TLV_CRC_SIZE;
 
-                bytes_written = (size_t)(p_write - (uint8_t *)p_dest); // All data + terminator fit.
+                //bytes_written = (size_t)(p_write - (uint8_t *)p_dest); // All data + terminator fit.
             }
             else
             {

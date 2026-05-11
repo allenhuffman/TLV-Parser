@@ -51,12 +51,13 @@ typedef struct
 /*---------------------------------------------------------------------------*/
 size_t tlv_parse_struct (const void * p_buf,
                          unsigned int buf_size,
-                         void * p_struct,
-                         const tlv_offset_entry_t * p_tlv_table);
+                         const tlv_offset_entry_t * p_tlv_table,
+                         void * p_struct);
 
-size_t tlv_write_struct (void * p_dest, unsigned int dest_size,
-                         const void * p_struct,
-                         const tlv_offset_entry_t * p_tlv_table);
+size_t tlv_write_struct (void * p_dest,
+                         unsigned int dest_size,
+                         const tlv_offset_entry_t * p_tlv_table,
+                         const void * p_struct);
 
 #endif /* TLV_STRUCT_H */
 
