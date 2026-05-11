@@ -1,7 +1,9 @@
-# TLV-Parser
+# TLV-Parser README
 
 ## Note from a Human
 Github Copilot created the tests and the bulk of this README, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
+
+# TLV-Parser
 
 T-L-V (Type-Length-Value) it a way to encode types of variable values (like an int, a double, a string, etc.) into a buffer, and load them back into variables later.
 
