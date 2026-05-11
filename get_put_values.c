@@ -1,122 +1,221 @@
-/*---------------------------------------------------------------------------*/
-// Sub-Etha Software's Get/Put Data routines.
-// By Allen C. Huffman
-// www.subethasoftware.com
-// https://github.com/allenhuffman/GetPutData/
-//
-// This is a simple set of functions to read and write various data types to
-// and from buffers.
-//
-// FILE HISTORY:
-//
-// 2026-05-08 allenh - Added this header.
-//
-// TODO:
-//
-// TOFIX:
-//
-/*---------------------------------------------------------------------------*/
+/**
+ * @file get_put_values.c
+ *
+ * @author Allen C. Huffman
+ * @copyright Copyright (c) 2026 Sub-Etha Software
+ * @note Origin: https://github.com/allenhuffman
+ * @note This file follows the Barr-C Embedded C Coding Standard.
+ *
+ * @brief Read/write values to/from a packed buffer.
+ *
+ * @details This module is implemented according to the Barr Group
+ * Embedded C Coding Standard (Barr-C).
+ *
+ * @section history File History
+ * - 2026-05-08 allenh - Updated to Barr-C style.
+ *
+ * @todo Possibly have put return count of how many bytes were written.
+ */
 
-/*---------------------------------------------------------------------------*/
-// Include Files
-/*---------------------------------------------------------------------------*/
-// Compiler headers.
+/* System headers */
 #include <stdint.h>
 #include <string.h> // for memset(), memcpy()
 
-// This file's header.
+/* This module's header (must be first among project headers) */
 #include "get_put_values.h"
 
+/* Public function definitions */
 
-/*---------------------------------------------------------------------------*/
-// GET Functions
-/*---------------------------------------------------------------------------*/
-
-void get_data (const uint8_t **ptr, void *data_ptr, unsigned int data_size)
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read   Pointer to the buffer pointer.
+ * @param[out] p_data   Pointer to the variable where the data will be stored.
+ * @param[in] data_size Size of the buffer where variable will be stored.
+ */
+void
+get_data (const uint8_t **pp_read, void *p_data, unsigned int data_size)
 {
-    memcpy (data_ptr, *ptr, data_size);
-    *ptr += data_size;
+    memcpy (p_data, *pp_read, data_size);
+    *pp_read += data_size;
 }
 
-uint8_t get_u8 (const uint8_t **ptr)
+
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read Pointer to the buffer pointer.
+ *
+ * @return The value read from the buffer.
+ */
+uint8_t
+get_u8 (const uint8_t **pp_read)
 {
     uint8_t value;
-    memcpy (&value, *ptr, sizeof(value));
-    *ptr += sizeof (value);
+    memcpy (&value, *pp_read, sizeof (value));
+    *pp_read += sizeof (value);
     return value;
 }
 
-uint16_t get_u16 (const uint8_t **ptr)
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read Pointer to the buffer pointer.
+ *
+ * @return The value read from the buffer.
+ */
+uint16_t
+get_u16 (const uint8_t **pp_read)
 {
     uint16_t value;
-    memcpy (&value, *ptr, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (&value, *pp_read, sizeof (value));
+    *pp_read += sizeof (value);
     return value;
 }
 
-uint32_t get_u32 (const uint8_t **ptr)
+
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read Pointer to the buffer pointer.
+ *
+ * @return The value read from the buffer.
+ */
+uint32_t
+get_u32 (const uint8_t **pp_read)
 {
     uint32_t value;
-    memcpy (&value, *ptr, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (&value, *pp_read, sizeof (value));
+    *pp_read += sizeof (value);
     return value;
 }
 
-float get_float (const uint8_t **ptr)
+
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read Pointer to the buffer pointer.
+ *
+ * @return The value read from the buffer.
+ */
+float
+get_float (const uint8_t **pp_read)
 {
     float value;
-    memcpy (&value, *ptr, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (&value, *pp_read, sizeof (value));
+    *pp_read += sizeof (value);
     return value;
 }
 
-double get_double (const uint8_t **ptr)
+
+/**
+ * @brief Read data from a buffer and advance the pointer.
+ *
+ * @param[in] pp_read Pointer to the buffer pointer.
+ *
+ * @return The value read from the buffer.
+ */
+double
+get_double (const uint8_t **pp_read)
 {
     double value;
-    memcpy (&value, *ptr, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (&value, *pp_read, sizeof (value));
+    *pp_read += sizeof (value);
     return value;
 }
 
 
-/*---------------------------------------------------------------------------*/
-// PUT Functions
-/*---------------------------------------------------------------------------*/
-
-void put_data (uint8_t **ptr, const void *data_ptr, unsigned int data_size)
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] p_data Pointer to the variable containing the data to write.
+ * @param[in] data_size Size of the data to write.
+ */
+void
+put_data (uint8_t ** pp_write, const void *p_data, unsigned int data_size)
 {
-    memcpy (*ptr, data_ptr, data_size);
-    *ptr += data_size;
+    memcpy (*pp_write, p_data, data_size);
+    *pp_write += data_size;
 }
 
-void put_u8 (uint8_t **ptr, uint8_t value)
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] value The value to write to the buffer.
+ * 
+ * @return None.
+ */
+void
+put_u8 (uint8_t **pp_write, uint8_t value)
 {
-    memcpy (*ptr, &value, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (*pp_write, &value, sizeof (value));
+    *pp_write += sizeof (value);
 }
 
-void put_u16 (uint8_t **ptr, uint16_t value)
+
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] value The value to write to the buffer.
+ *
+ * @return None.
+ */
+void
+put_u16 (uint8_t **pp_write, uint16_t value)
 {
-    memcpy (*ptr, &value, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (*pp_write, &value, sizeof (value));
+    *pp_write += sizeof (value);
 }
 
-void put_u32 (uint8_t **ptr, uint32_t value)
+
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] value The value to write to the buffer.
+ *
+ * @return None.
+ */
+void
+put_u32 (uint8_t **pp_write, uint32_t value)
 {
-    memcpy (*ptr, &value, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (*pp_write, &value, sizeof (value));
+    *pp_write += sizeof (value);
 }
 
-void put_float (uint8_t **ptr, float value)
+
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] value The value to write to the buffer.
+ *
+ * @return None.
+ */
+void
+put_float (uint8_t **pp_write, float value)
 {
-    memcpy (*ptr, &value, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (*pp_write, &value, sizeof (value));
+    *pp_write += sizeof (value);
 }
 
-void put_double (uint8_t **ptr, double value)
+
+/**
+ * @brief Write data to a buffer and advance the pointer.
+ *
+ * @param[in] pp_write Pointer to the buffer pointer.
+ * @param[in] value The value to write to the buffer.
+ *
+ * @return None.
+ */
+void
+put_double (uint8_t **pp_write, double value)
 {
-    memcpy (*ptr, &value, sizeof (value));
-    *ptr += sizeof (value);
+    memcpy (*pp_write, &value, sizeof (value));
+    *pp_write += sizeof (value);
 }
 
-// End of get_put_values.c
+/*** end of file ***/

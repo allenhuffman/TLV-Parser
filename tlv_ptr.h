@@ -42,7 +42,7 @@ typedef struct
 {
    uint8_t  type;
    uint8_t  length;
-   void     *p_value;
+   void     *value;
 } tlv_ptr_entry_t;
 
 

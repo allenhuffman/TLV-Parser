@@ -206,7 +206,7 @@ tlv_parse_ptr (const void * p_buf,
                         {
                             // Copy length bytes from buffer into variable
                             // at table entry pointer.
-                            memcpy (p_tlv_table[table_entry].p_value,
+                            memcpy (p_tlv_table[table_entry].value,
                                     p_read, p_tlv_table[table_entry].length);
 #if (DEBUG_TLV > 0)
                             type_found = true;
@@ -320,7 +320,7 @@ tlv_write_ptr (void * p_dest,
             put_u8 (&p_write, p_tlv_table[table_entry].type);
             put_u8 (&p_write, p_tlv_table[table_entry].length);
             put_data (&p_write,
-			          p_tlv_table[table_entry].p_value,
+			          p_tlv_table[table_entry].value,
 					  p_tlv_table[table_entry].length);
 
             bytes_written = bytes_written + TLV_HEADER_SIZE + p_tlv_table[table_entry].length;

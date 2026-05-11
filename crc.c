@@ -1,120 +1,144 @@
-/*---------------------------------------------------------------------------*/
-// Includes
-/*---------------------------------------------------------------------------*/
-// Compiler headers.
+/**
+ * @file crc.c
+ *
+ * @author Allen C. Huffman
+ * @copyright Copyright (c) 2026 Sub-Etha Software
+ * @note Origin: https://github.com/allenhuffman
+ * @note This file follows the Barr-C Embedded C Coding Standard.
+ *
+ * @brief CRC calculation functions.
+ *
+ * @details This module is implemented according to the Barr Group
+ * Embedded C Coding Standard (Barr-C).
+ *
+ * @section history File History
+ * - 2026-05-08 allenh - Updated to Barr-C style.
+ *
+ * @todo None
+ */
+
+/* System headers */
 #include <stddef.h> // size_t
 #include <stdint.h> // uint16_t
 
-// This file's header.
+/* This module's header (must be first among project headers) */
 #include "crc.h"
 
-/*---------------------------------------------------------------------------*/
-// Functions
-/*---------------------------------------------------------------------------*/
+/* Public function definitions */
 
-/*---------------------------------------------------------------------------*/
-// Calculate CRC over a range of bytes.
-/*---------------------------------------------------------------------------*/
-uint16_t crc_calculate (const void *buffer, size_t size)
+/**
+ * @brief Calculate CRC over a buffer.
+ *
+ * @param[in] buffer  Pointer to the data buffer.
+ * @param[in] size    Size of the data buffer.
+ *
+ * @return The calculated CRC value.
+ */
+uint16_t
+crc_calculate (const void *p_buf, size_t buf_size)
 {
     uint16_t crc = 0;
 
     // NULL check.
-    if ((NULL != buffer) && (0 != size))
+    if ((NULL != p_buf) && (0 != buf_size))
     {
         // Not NULL, and some data.
-        crc = crc_bytes (buffer, size, 0);
+        crc = crc_bytes(p_buf, buf_size, 0);
     }
 
     return crc;
 }
 
-
-/*---------------------------------------------------------------------------*/
-// @brief CCS .hex file CRC routine, converted to C by "PCM programmer".
-//        Original C# version from:
-//        https://curioussystem.com/2012/12/11/editing-pic-hex-files/
-//
-//        NOTE: First call, crc_Dbyte must be initialized to 0.
-//
-//        See: https://crccalc.com/ (CRC-16/XMODEM)
-//
-// @param inByte - next byte to add to CRC calculation.
-// @param crc_Dbyte - current CRC value.
-//
-// @return  uint16_t - new CRC value.
-/*---------------------------------------------------------------------------*/
-uint16_t crc (uint8_t inByte, uint16_t crc_Dbyte)
+/**
+ * @brief CCS .hex file CRC routine, converted to C by "PCM programmer".
+ *        Original C# version from:
+ * 
+ *        https://curioussystem.com/2012/12/11/editing-pic-hex-files/
+ *
+ *        NOTE: First call, crc_Dbyte must be initialized to 0.
+ *
+ *        See: https://crccalc.com/ (CRC-16/XMODEM)
+ *
+ * @param[in] in_byte    Next byte to add to CRC calculation.
+ * @param[in] crc_running Current CRC value.
+ *
+ * @return New CRC value.
+ */
+uint16_t
+crc (uint8_t in_byte, uint16_t crc_running)
 {
-    uint8_t bit_counter;
-    uint16_t c;
+    uint8_t  bit_counter;
+    uint16_t shifted;
 
-    // DEBUG_PRINTF ("%02x ", inByte);
-
-    c = ((uint16_t)inByte << 8) & 0xFF00;
+    shifted = ((uint16_t)in_byte << 8) & 0xFF00;
 
     for (bit_counter = 0; bit_counter < 8; bit_counter++)
     {
-        if (((crc_Dbyte ^ c) & 0x8000) != 0)
+        if (((crc_running ^ shifted) & 0x8000) != 0)
         {
-            crc_Dbyte <<= 1;
-            crc_Dbyte ^= 0x1021;
+            crc_running <<= 1;
+            crc_running ^= 0x1021;
         }
         else
         {
-            crc_Dbyte <<= 1;
+            crc_running <<= 1;
         }
 
-        c <<= 1;
+        shifted <<= 1;
     }
 
-    return crc_Dbyte;
+    return crc_running;
 }
 
-/*---------------------------------------------------------------------------*/
-// @brief  Calculate CRC over a range of bytes.
-//
-// @param  inBytes - pointer to data bytes.
-// @param  length - length of the data bytes.
-// @param  crc_Dbyte - current CRC value.
-//
-// @return uint16_t - new CRC value.
-/*---------------------------------------------------------------------------*/
-uint16_t crc_bytes (const uint8_t *inBytes, size_t length, uint16_t crc_Dbyte)
+
+
+/**
+ * @brief Calculate CRC over a range of bytes.
+ *
+ * @param[in] p_bytes    Pointer to the data bytes.
+ * @param[in] length     Length of the data bytes.
+ * @param[in] crc_running Current CRC value.
+ *
+ * @return The new CRC value.
+ */
+uint16_t
+crc_bytes (const uint8_t * p_bytes, size_t length, uint16_t crc_running)
 {
-    if (inBytes != NULL)
+    if (NULL != p_bytes)
     {
         size_t byte_counter = 0;
 
         for (byte_counter = 0; byte_counter < length; byte_counter++)
         {
-            crc_Dbyte = crc (inBytes[byte_counter], crc_Dbyte);
+            crc_running = crc (p_bytes[byte_counter], crc_running);
         }
     }
 
-    return crc_Dbyte;
+    return crc_running;
 }
 
-/*---------------------------------------------------------------------------*/
-// @brief  Calculate CRC over a null-terminated string.
-//
-// @param  inString - pointer to a null-terminated string.
-// @param  crc_Dbyte - current CRC value.
-//
-// @return uint16_t - new CRC value.
-/*---------------------------------------------------------------------------*/
-uint16_t crc_string (const char *inString, uint16_t crc_Dbyte)
+
+/**
+ * @brief Calculate CRC over a null-terminated string.
+ *
+ * @param[in] p_string   Pointer to a null-terminated string.
+ * @param[in] crc_running Current CRC value.
+ *
+ * @return The new CRC value.
+ */
+uint16_t
+crc_string (const char * p_string, uint16_t crc_running)
 {
-    if (inString != NULL)
+    if (NULL != p_string)
     {
-        while (*inString != '\0')
+        while ('\0' != *p_string)
         {
-            crc_Dbyte = crc ((uint8_t)*inString, crc_Dbyte);
-            inString++;
+            crc_running = crc ((uint8_t)*p_string, crc_running);
+            p_string++;
         }
     }
 
-    return crc_Dbyte;
+    return crc_running;
 }
 
-// End of crc.c
+/*** end of file ***/

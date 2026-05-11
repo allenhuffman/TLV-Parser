@@ -20,7 +20,7 @@ typedef struct
 {
     uint8_t default_color;
     uint8_t default_mode;
-    uint16_t default_value;
+    uint16_t value;
 } configuration_struct_t;
 ```
 
@@ -44,7 +44,7 @@ Using a TLV method, the variables would have type numbers that writer and parse 
 Types
 [01] - uint8_t default_color
 [02] - uint8_t default_mode
-[03] - uint16_t default_value
+[03] - uint16_t value
 ```
 
 Data would be stored with that type value, followed by the length of the data, then the actual data itself. For the above configuration, it might look like:
@@ -52,7 +52,7 @@ Data would be stored with that type value, followed by the length of the data, t
 ```
 default_color = 0x42;
 default_mode = 0x99;
-default_value = 0x1234;
+value = 0x1234;
 
 ...
 
