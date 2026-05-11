@@ -1,45 +1,38 @@
-/*---------------------------------------------------------------------------*/
-// Sub-Etha Software's TLV Parser (structure offset version)
-// By Allen C. Huffman
-// www.subethasoftware.com
-//
-// This is a simple TLV (Type-Length-Value) parser that can be used to read
-// and write TLV data to and from buffers.
-//
-// FILE HISTORY:
-//
-// 2026-05-08 allenh - Added more comments.
-//
-// TODO:
-//
-// * Add support for big/little endien conversion when copying data.
-// * Add ability to copy smaller data into larger variable (e.g. copy 1 byte
-//   into uint16_t).
-//
-// TOFIX:
-//
-/*---------------------------------------------------------------------------*/
+/**
+ * @file tlv_struct.c
+ *
+ * @author Allen C. Huffman
+ * @copyright Copyright (c) 2026 Sub-Etha Software
+ * @note Origin: https://github.com/allenhuffman
+ * @note This file follows the Barr-C Embedded C Coding Standard.
+ *
+ * @brief Implementation of the module.
+ *
+ * @details This module is implemented according to the Barr Group
+ * Embedded C Coding Standard (Barr-C).
+ *
+ * @section history File History
+ * - 2026-XX-XX allenh - Created.
+ *
+ * @todo Add module-specific functionality.
+ * @todo Document any API-specific edge cases.
+ */
 
-/*---------------------------------------------------------------------------*/
-// Include Files
-/*---------------------------------------------------------------------------*/
-// Compiler headers.
+/* System headers */
 #include <inttypes.h> // uintptr_t
 #include <stdbool.h>  // for bool/true/false
 #include <stddef.h>   // for NULL
 #include <stdio.h>    // for printf
 #include <string.h>   // for memcpy ()
 
-// This file's header.
+/* This module's header (must be first among project headers) */
 #include "tlv_struct.h"
 
-// Other headers.
+/* External module headers */
 #include "crc.h"
 #include "get_put_values.h"
 
-/*---------------------------------------------------------------------------*/
-// Constants
-/*---------------------------------------------------------------------------*/
+/* Private macros: all #define items, constants and function-like macros */
 // 0 = No debug messages, 1 = Debug messages, 2 = Even more debug messages.
 #define DEBUG_TLV 0
 
@@ -53,17 +46,23 @@
 #define TLV_CRC_SIZE      (sizeof(uint16_t))
 
 
-/*---------------------------------------------------------------------------*/
-// Functions
-/*---------------------------------------------------------------------------*/
+/* Public function definitions */
 
-/*---------------------------------------------------------------------------*/
-// Read and parse TLV data from a buffer and copy into a structure.
-/*---------------------------------------------------------------------------*/
-size_t tlv_parse_struct (const void * p_buf,
-                         unsigned int buf_size,
-                         const tlv_offset_entry_t * p_tlv_table,
-                         void * p_struct)
+/**
+ * @brief Read and parse TLV data from a buffer and copy into variables.
+ *
+ * @param[in] p_buf       Pointer to the buffer containing TLV data.
+ * @param[in] buf_size    Size of the buffer in bytes.
+ * @param[in] p_tlv_table Pointer to the TLV table defining the structure of the data.
+ * @param[out] p_struct
+ *
+ * @return The number of bytes successfully parsed, or 0 if an error occurred.
+ */
+ size_t
+ tlv_parse_struct (const void * p_buf,
+ 				  unsigned int buf_size,
+                  const tlv_offset_entry_t * p_tlv_table,
+                  void * p_struct)
 {
     size_t bytes_consumed = 0;
 
@@ -268,13 +267,21 @@ size_t tlv_parse_struct (const void * p_buf,
 }
 
 
-/*---------------------------------------------------------------------------*/
-// Write elements of a structure in the TLV structure to a TLV buffer.
-/*---------------------------------------------------------------------------*/
-size_t tlv_write_struct (void * p_dest,
-                         unsigned int dest_size,
-                         const tlv_offset_entry_t * p_tlv_table,
-                         const void * p_struct)
+/**
+ * @brief Write elements of a structure in the TLV structure to a TLV buffer.
+ *
+ * @param[in] p_dest       Pointer to the buffer where TLV data will be written.
+ * @param[in] dest_size    Size of the destination buffer in bytes.
+ * @param[in] p_tlv_table  Pointer to the TLV table defining the structure of the data.
+ * param[out] p_struct
+ *
+ * @return The number of bytes successfully written, or 0 if an error occurred.
+ */
+size_t
+tlv_write_struct (void * p_dest,
+  				  unsigned int dest_size,
+                  const tlv_offset_entry_t * p_tlv_table,
+                  const void * p_struct)
 {
     size_t bytes_written = 0;
 
@@ -311,7 +318,7 @@ size_t tlv_write_struct (void * p_dest,
             if ((p_write + entry_size) > p_end)
             {
 #if (DEBUG_TLV > 0)
-                DEBUG_PRINTF ("EEPROM area too small to fit all.\n");
+                DEBUG_PRINTF ("Destination area too small to fit all.\n");
 #endif
                 bytes_written = 0;
 
@@ -363,4 +370,4 @@ size_t tlv_write_struct (void * p_dest,
     return bytes_written;
 }
 
-// End of tlv_struct.c
+/*** end of file ***/
