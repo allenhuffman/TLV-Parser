@@ -53,8 +53,10 @@
  *
  * @param[in] p_buf       Pointer to the buffer containing TLV data.
  * @param[in] buf_size    Size of the buffer in bytes.
- * @param[in] p_tlv_table Pointer to the TLV table defining the structure of the data.
- * @param[out] p_struct
+ * @param[in] p_tlv_table Pointer to the TLV table defining the structure of 
+ *                        the data.
+ * @param[out] p_struct   Pointer to the structure where parsed values will
+ *                        be stored.
  *
  * @return The number of bytes successfully parsed, or 0 if an error occurred.
  */

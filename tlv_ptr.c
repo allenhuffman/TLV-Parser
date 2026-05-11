@@ -268,7 +268,8 @@ tlv_parse_ptr (const void * p_buf,
  *
  * @param[in] p_dest       Pointer to the buffer where TLV data will be written.
  * @param[in] dest_size    Size of the destination buffer in bytes.
- * @param[in] p_tlv_table  Pointer to the TLV table defining the structure of the data.
+ * @param[in] p_tlv_table  Pointer to the TLV table defining the structure of
+ *                         the data.
  *
  * @return The number of bytes successfully written, or 0 if an error occurred.
  */
@@ -310,7 +311,7 @@ tlv_write_ptr (void * p_dest,
             if ((p_write + entry_size) > p_end)
             {
 #if (DEBUG_TLV > 0)
-                DEBUG_PRINTF ("Destination area too small to fit all.\n");
+                DEBUG_PRINTF ("EEPROM area too small to fit all.\n");
 #endif
                 bytes_written = 0;
 
