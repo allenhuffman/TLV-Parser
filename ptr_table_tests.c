@@ -78,7 +78,7 @@ static void run_ptr_table_write_tests (void)
     uint32_t dword = 0x33333333;
     char     string[6] = "ABCDE";
 
-    tlv_ptr_struct_t tlv_table[] =
+    tlv_ptr_entry_t tlv_table[] =
     {
         TLVPTRENTRY(1, byte),
         TLVPTRENTRY(2, word),
@@ -119,7 +119,7 @@ static void run_ptr_table_parse_tests (void)
     uint32_t dword = 0;
     char     string[6] = { 0 };
 
-    tlv_ptr_struct_t tlv_table[] =
+    tlv_ptr_entry_t tlv_table[] =
     {
         TLVPTRENTRY(1, byte),
         TLVPTRENTRY(2, word),
@@ -128,7 +128,7 @@ static void run_ptr_table_parse_tests (void)
         TLVPTRENTRYEND
     };
 
-    tlv_ptr_struct_t tlv_table_reordered[] =
+    tlv_ptr_entry_t tlv_table_reordered[] =
     {
         TLVPTRENTRY(4, string),
         TLVPTRENTRY(2, word),
@@ -139,7 +139,7 @@ static void run_ptr_table_parse_tests (void)
 
     guarded_targets_t guarded = { 0 };
 
-    tlv_ptr_struct_t guarded_table[] =
+    tlv_ptr_entry_t guarded_table[] =
     {
         { 1, 1, &guarded.byte[1] },
         { 2, 2, &guarded.word[1] },

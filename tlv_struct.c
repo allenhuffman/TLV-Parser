@@ -49,6 +49,9 @@
     #define DEBUG_PRINTF(...)
 #endif
 
+#define TLV_HEADER_SIZE   (sizeof(uint8_t) + sizeof(uint8_t))
+#define TLV_CRC_SIZE      (sizeof(uint16_t))
+
 
 /*---------------------------------------------------------------------------*/
 // Functions
@@ -57,65 +60,67 @@
 /*---------------------------------------------------------------------------*/
 // Read and parse TLV data from a buffer and copy into a structure.
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
-                         void *struct_ptr,
-                         const tlv_offset_struct_t *tlv_table_ptr)
+size_t tlv_parse_struct (const void * p_buf,
+                         unsigned int buf_size,
+                         void * p_struct,
+                         const tlv_offset_entry_t * p_tlv_table)
 {
     size_t bytes_consumed = 0;
 
 #if (DEBUG_TLV > 1)
      DEBUG_PRINTF ("tlv_parse_struct (0x%x, %u, 0x%x, 0x%x)\r\n",
-                   (unsigned int)((uintptr_t)data_ptr),
-                   data_size,
-                   (unsigned int)((uintptr_t)struct_ptr),
-                   (unsigned int)(uintptr_t)tlv_table_ptr);
+                   (unsigned int)((uintptr_t)p_buf),
+                   buf_size,
+                   (unsigned int)((uintptr_t)p_struct),
+                   (unsigned int)(uintptr_t)p_tlv_table);
 #endif
 
     // Must have seemingly valid pointers.
-    if ((NULL != data_ptr) && (NULL != struct_ptr) && (NULL != tlv_table_ptr))
+    if ((NULL != p_buf) && (NULL != p_struct) && (NULL != p_tlv_table))
     {
+        const uint8_t * p_read = NULL;
+        const uint8_t * p_end = NULL;
         unsigned int    type = 0;
         unsigned int    length = 0;
-        const uint8_t   *end_ptr = NULL;
-        const uint8_t   *ptr = NULL;
-        unsigned int    table_entry = 0;
 
         // To avoid parsing corrupt data, we first need to scan and find the
         // end of the TLV data and then check the CRC.
 
-        // Set ptr to start of buffer.
-        ptr = (const uint8_t *)data_ptr;
-        // Set end_ptr to end of buffer.
-        end_ptr = (const uint8_t *)data_ptr + data_size;
+        // Set p_read to start of buffer.
+        p_read = (const uint8_t *)p_buf;
+
+        // Set p_end to end of buffer.
+        p_end = (const uint8_t *)p_buf + buf_size;
 
         // Must have at least 3 more bytes to parse before the end of buffer.
-        while ((ptr + 2) <= end_ptr)
+        while ((p_read + 2) <= p_end)
         {
             // Get type byte and length byte.
-            type = get_u8 (&ptr);
-            length = get_u8 (&ptr);
+            type = get_u8 (&p_read);
+            length = get_u8 (&p_read);
 
             // If both are zero, it is the end of the TLV data.
             if ((0 == type) && (0 == length))
             {
                 // If there is NOT room for the 2-byte CRC...
-                if ((ptr + sizeof (uint16_t)) > end_ptr)
+                if ((p_read + sizeof (uint16_t)) > p_end)
                 {
                     bytes_consumed = 0;
                 }
                 else
                 {
                     // Calculate CRC over buffer up to this point.
-                    uint16_t calculated_crc = crc_calculate (data_ptr,
-                                (size_t)(ptr - (const uint8_t *)data_ptr));
+                    uint16_t calculated_crc = crc_calculate (p_buf,
+                        (size_t)(p_read - (const uint8_t *)p_buf));
                     
                     // Get 2-byte CRC from buffer.
-                    uint16_t crc = get_u16 (&ptr);
+                    uint16_t crc = get_u16 (&p_read);
 
                     // If it matches, update bytes_consumed value.
                     if (crc == calculated_crc)
                     {
-                        bytes_consumed = (size_t)(ptr - (const uint8_t *)data_ptr);
+                        bytes_consumed = (size_t)(p_read - 
+                            (const uint8_t *)p_buf);
                     }
                     else
                     {
@@ -132,7 +137,7 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
             } // end of if ((0 == type) && (0 == length))
 
             // If stored length would exceed size of buffer...
-            if ((ptr + length) > end_ptr)
+            if ((p_read + length) > p_end)
             {
                 // ...data is corrupt or invalid. Set bytes consumed to 0.
                 bytes_consumed = 0;
@@ -142,7 +147,7 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
             }
 
             // Otherwise, move pointer forward length bytes, skipping the data.
-            ptr += length;
+            p_read += length;
         } // end of while ((ptr + 2) <= end_ptr)
 
         // Done scanning, but proceed only if bytes consumed is non-zero.
@@ -152,19 +157,20 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
             bool keep_scanning = true;
 
             // Reset ptr to start of buffer.
-            ptr = (const uint8_t *)data_ptr;
+            p_read = (const uint8_t *)p_buf;
+
             // Reset end_ptr to end of buffer.
-            end_ptr = (const uint8_t *)data_ptr + data_size;
+            p_end = (const uint8_t *)p_buf + buf_size;
 
             // Must have at least 3 more bytes to parse before the end of buffer.
-            while ((ptr + 2) <= end_ptr)
+            while ((p_read + 2) <= p_end)
             {
 #if (DEBUG_TLV > 0)
                 bool type_found = false;
 #endif
                 // Get type byte and length byte.
-                type = get_u8 (&ptr);
-                length = get_u8 (&ptr);
+                type = get_u8 (&p_read);
+                length = get_u8 (&p_read);
 
                 // If both are zero, it is the end of the TLV data.
                 if ((0 == type) && (0 == length))
@@ -174,10 +180,10 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                 }
 
                 // If stored length would exceed size of buffer...
-                if ((ptr + length) > end_ptr)
+                if ((p_read + length) > p_end)
                 {
 #if (DEBUG_TLV > 0)
-                    DEBUG_PRINTF ("TLVParseStruct: Type %u length %u exceeds buffer.\n",
+                    DEBUG_PRINTF ("Type %u length %u exceeds buffer.\n",
                                   type, length);
 #endif
                     // ...data is corrupt or invalid. Set bytes consumed to 0.
@@ -188,27 +194,26 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                 }
 
                 // Scan through TLV table starting with the first entry.
-                table_entry = 0;
+                unsigned int table_entry = 0;
                 
-                // Scan as long as table has non-zero entries.
-                while (((tlv_table_ptr[table_entry].type != 0) ||
-                        (tlv_table_ptr[table_entry].length != 0) ||
-                        (tlv_table_ptr[table_entry].offset != 0)) &&
-                       (true == keep_scanning))
+                // Scan as long as table has non-zero type and length.
+                while ((true == keep_scanning) && 
+                       (0 != p_tlv_table[table_entry].type) &&
+                       (0 != p_tlv_table[table_entry].length))
                 {
 #if (DEBUG_TLV > 0)
                     type_found = false;
 #endif
                     // If table entry type matches type read from buffer...
-                    if (tlv_table_ptr[table_entry].type == type)
+                    if (p_tlv_table[table_entry].type == type)
                     {
-                        // ...and entry length matches length read from buffer.
-                        if (tlv_table_ptr[table_entry].length == length)
+                        // ...and table entry length matches length read from buffer...
+                        if (p_tlv_table[table_entry].length == length)
                         {
                             // Copy length bytes from buffer into structure
                             // at table entry offset.
-                            memcpy ((uint8_t *)struct_ptr + tlv_table_ptr[table_entry].offset,
-                                    ptr, tlv_table_ptr[table_entry].length);
+                            memcpy ((uint8_t *)p_struct + p_tlv_table[table_entry].offset,
+                                    p_read, p_tlv_table[table_entry].length);
 #if (DEBUG_TLV > 0)
                             type_found = true;
 #endif
@@ -218,7 +223,7 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                             // Buffer length for this type did not match...
 #if (DEBUG_TLV > 0)
                             DEBUG_PRINTF ("T:%u L:%u is wrong (expected L:%u). Skipping rest of this section.\r\n",
-                                          type, length, tlv_table_ptr[table_entry].length);
+                                          type, length, p_tlv_table[table_entry].length);
 #endif
                             // In the event bad data is ever written with a good
                             // CRC, we also make sure we have a known type with
@@ -235,7 +240,7 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
 
                     // Move to next table entry.
                     table_entry++;
-                } // end of while (((tlv_table_ptr[table_entry].type . . .
+                } // end of while ((true == keep_scanning) && (0 != p_tlv_table[table_entry].type) && (0 != p_tlv_table[table_entry].length))
 
 #if (DEBUG_TLV > 0)
                 if ((true == keep_scanning) && (true != type_found))
@@ -253,7 +258,7 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
                 }
 
                 // Otherwise, move forward in buffer by length bytes.
-                ptr += length;
+                p_read += length;
             } // end of while ((ptr + 2) <= end_ptr)
         } // end of if (0 != bytes_consumed)
     } // end of if ((NULL != data_ptr) . . .
@@ -266,57 +271,58 @@ size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
 /*---------------------------------------------------------------------------*/
 // Write elements of a structure in the TLV structure to a TLV buffer.
 /*---------------------------------------------------------------------------*/
-size_t tlv_write_struct (void *dest_ptr, unsigned int dest_size,
-                         const void *struct_ptr,
-                         const tlv_offset_struct_t *tlv_table_ptr)
+size_t tlv_write_struct (void * p_dest,
+                         unsigned int dest_size,
+                         const void * p_struct,
+                         const tlv_offset_entry_t * p_tlv_table)
 {
     size_t bytes_written = 0;
 
 #if (DEBUG_TLV > 1)
     DEBUG_PRINTF ("tlv_write_struct (0x%x, %u, 0x%x, 0x%x)\r\n",
-                  (unsigned int)(uintptr_t)dest_ptr,
+                  (unsigned int)(uintptr_t)p_dest,
                   dest_size,
-                  (unsigned int)(uintptr_t)struct_ptr,
-                  (unsigned int)(uintptr_t)tlv_table_ptr);
+                  (unsigned int)(uintptr_t)p_struct,
+                  (unsigned int)(uintptr_t)p_tlv_table);
 #endif
 
-    if ((NULL != dest_ptr) && (NULL != struct_ptr) && (NULL != tlv_table_ptr))
+    if ((NULL != p_dest) && (NULL != p_struct) && (NULL != p_tlv_table))
     {
-        uint8_t *ptr = NULL;
-        uint8_t *end_ptr = NULL;
+        uint8_t * ptr = NULL;
+        uint8_t * end_ptr = NULL;
         unsigned int table_entry = 0;
 
-        ptr = (uint8_t *)dest_ptr;
-        end_ptr = (uint8_t *)dest_ptr + dest_size;
+        ptr = (uint8_t *)p_dest;
+        end_ptr = (uint8_t *)p_dest + dest_size;
 
-        while ((tlv_table_ptr[table_entry].offset != 0) ||
-               (tlv_table_ptr[table_entry].type != 0) ||
-               (tlv_table_ptr[table_entry].length != 0))
+        while ((0 != p_tlv_table[table_entry].offset) ||
+               (0 != p_tlv_table[table_entry].type) ||
+               (0 != p_tlv_table[table_entry].length))
         {
             size_t entry_size = sizeof(uint8_t) + sizeof(uint8_t) +
-                                tlv_table_ptr[table_entry].length;
+                                p_tlv_table[table_entry].length;
 
 #if (DEBUG_TLV > 0)
             DEBUG_PRINTF ("%u. %u,%u\r\n", table_entry,
-                          tlv_table_ptr[table_entry].type,
-                          tlv_table_ptr[table_entry].length);
+                          p_tlv_table[table_entry].type,
+                          p_tlv_table[table_entry].length);
 #endif
 
             if ((ptr + entry_size) > end_ptr)
             {
 #if (DEBUG_TLV > 0)
-                DEBUG_PRINTF ("tlv_write_struct: EEPROM area too small to fit all.\n");
+                DEBUG_PRINTF ("EEPROM area too small to fit all.\n");
 #endif
                 bytes_written = 0;
                 ptr = NULL;
                 break;
             }
 
-            put_u8 (&ptr, tlv_table_ptr[table_entry].type);
-            put_u8 (&ptr, tlv_table_ptr[table_entry].length);
+            put_u8 (&ptr, p_tlv_table[table_entry].type);
+            put_u8 (&ptr, p_tlv_table[table_entry].length);
             put_data (&ptr,
-                      ((const uint8_t *)struct_ptr + tlv_table_ptr[table_entry].offset),
-                      tlv_table_ptr[table_entry].length);
+                      ((const uint8_t *)p_struct + p_tlv_table[table_entry].offset),
+                      p_tlv_table[table_entry].length);
 
             table_entry++;
         }
@@ -332,17 +338,17 @@ size_t tlv_write_struct (void *dest_ptr, unsigned int dest_size,
                 put_u8 (&ptr, 0);  // No length. This signals the end of data.
 
                 // Calculate CRC over the buffer.
-                uint16_t crc = crc_calculate (dest_ptr,
-                                                (size_t)(ptr - (uint8_t *)dest_ptr));
+                uint16_t crc = crc_calculate (p_dest,
+                                              (size_t)(ptr - (uint8_t *)p_dest));
                 // Add the 16-bit CRC at the end.
                 put_u16 (&ptr, crc);
 
-                bytes_written = (size_t)(ptr - (uint8_t *)dest_ptr);
+                bytes_written = (size_t)(ptr - (uint8_t *)p_dest);
             }
             else
             {
 #if (DEBUG_TLV > 0)
-                DEBUG_PRINTF ("tlv_write_struct: No room for terminator and/or CRC.\n");
+                DEBUG_PRINTF ("No room for terminator and/or CRC.\n");
 #endif
                 bytes_written = 0;
             }

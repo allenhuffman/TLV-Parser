@@ -43,19 +43,20 @@ typedef struct
    uint8_t  type;
    uint8_t  length;
    uint16_t offset; // or uint8_t if not struct is > 255 bytes.
-} tlv_offset_struct_t;
+} tlv_offset_entry_t;
 
 
 /*---------------------------------------------------------------------------*/
 // Prototypes
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_struct (const void *data_ptr, unsigned int data_size,
-                         void *struct_ptr,
-                         const tlv_offset_struct_t *tlv_table_ptr);
+size_t tlv_parse_struct (const void * p_buf,
+                         unsigned int buf_size,
+                         void * p_struct,
+                         const tlv_offset_entry_t * p_tlv_table);
 
-size_t tlv_write_struct (void *dest_ptr, unsigned int dest_size,
-                         const void *struct_ptr,
-                         const tlv_offset_struct_t *tlv_table_ptr);
+size_t tlv_write_struct (void * p_dest, unsigned int dest_size,
+                         const void * p_struct,
+                         const tlv_offset_entry_t * p_tlv_table);
 
 #endif /* TLV_STRUCT_H */
 

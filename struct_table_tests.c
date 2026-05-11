@@ -92,7 +92,7 @@ static void run_struct_write_tests (void)
 {
     message_t message = { 0x11, 0x2222, 0x33333333U, "ABCDE" };
 
-    const tlv_offset_struct_t struct_table[] =
+    const tlv_offset_entry_t struct_table[] =
     {
         TLVSTRUCTENTRY(1, message_t, byte),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -130,7 +130,7 @@ static void run_struct_parse_tests (void)
 {
     message_t message = { 0 };
 
-    const tlv_offset_struct_t struct_table[] =
+    const tlv_offset_entry_t struct_table[] =
     {
         TLVSTRUCTENTRY(1, message_t, byte),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -139,7 +139,7 @@ static void run_struct_parse_tests (void)
         TLVSTRUCTENTRYEND
     };
 
-    const tlv_offset_struct_t struct_table_reordered[] =
+    const tlv_offset_entry_t struct_table_reordered[] =
     {
         TLVSTRUCTENTRY(4, message_t, string),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -150,7 +150,7 @@ static void run_struct_parse_tests (void)
 
     guarded_message_t guarded = { 0 };
 
-    const tlv_offset_struct_t guarded_table[] =
+    const tlv_offset_entry_t guarded_table[] =
     {
         { 1, 1, offsetof(guarded_message_t, byte) },
         { 2, 2, offsetof(guarded_message_t, word) },

@@ -42,18 +42,20 @@ typedef struct
 {
    uint8_t  type;
    uint8_t  length;
-   void     *value_ptr;
-} tlv_ptr_struct_t;
+   void     *p_value;
+} tlv_ptr_entry_t;
 
 
 /*---------------------------------------------------------------------------*/
 // Prototypes
 /*---------------------------------------------------------------------------*/
-size_t tlv_parse_ptr (const void *data_ptr, unsigned int data_size,
-                      const tlv_ptr_struct_t *tlv_table_ptr);
+size_t tlv_parse_ptr (const void * p_buf,
+                      unsigned int buf_size,
+                      const tlv_ptr_entry_t * p_tlv_table);
 
-size_t tlv_write_ptr (void *dest_ptr, unsigned int dest_size,
-                      const tlv_ptr_struct_t *tlv_table_ptr);
+size_t tlv_write_ptr (void * p_dest,
+                      unsigned int dest_size,
+                      const tlv_ptr_entry_t * p_tlv_table);
 
 #endif /* TLV_PTR_H */
 
