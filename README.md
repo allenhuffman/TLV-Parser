@@ -3,6 +3,8 @@
 ## Note from a Human
 Github Copilot created the tests and the bulk of this README "Description" section, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
 
+* In order to compile this on the CCS PCD compiler for PIC24, the "const" references have to be disabled. To make this easier to do, the header files now have a "#define CONST" that can be enabled or disabled.
+
 # TLV-Parser
 
 T-L-V (Type-Length-Value) it a way to encode types of variable values (like an int, a double, a string, etc.) into a buffer, and load them back into variables later.
