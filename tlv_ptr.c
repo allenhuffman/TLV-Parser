@@ -74,8 +74,8 @@ tlv_parse_ptr (CONST void * p_buf,
     {
         CONST uint8_t * p_read  = NULL;
         CONST uint8_t * p_end   = NULL;
-        unsigned int    type    = 0;
-        unsigned int    length  = 0;
+        uint8_t         type    = 0;
+        uint8_t         length  = 0;
 
         // To avoid parsing corrupt data, we first need to scan and find the
         // end of the TLV data and then check the CRC.
