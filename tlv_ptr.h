@@ -24,6 +24,14 @@
 
 /* Public macros: all #define items, constants and function-like macros */
 
+// CCS PCD compiler for PIC24 handles const differently that standard C
+// compilers. For environments like that, this macro can be modified to
+// remove the use of const in this module.
+#ifndef CONST
+    #define CONST const
+    //#define CONST
+#endif
+
 #define TLVPTRENTRY(n,v)   { n, sizeof(v), &v }
 #define TLVPTRENTRYEND     { 0, 0, NULL }
 
@@ -42,13 +50,13 @@ typedef struct
 
 /* Public function prototypes */
 
-size_t tlv_parse_ptr (const void * p_buf,
+size_t tlv_parse_ptr (CONST void * p_buf,
                       unsigned int buf_size,
-                      const tlv_ptr_entry_t * p_tlv_table);
+                      CONST tlv_ptr_entry_t * p_tlv_table);
 
 size_t tlv_write_ptr (void * p_dest,
                       unsigned int dest_size,
-                      const tlv_ptr_entry_t * p_tlv_table);
+                      CONST tlv_ptr_entry_t * p_tlv_table);
 
 #endif /* TLV_PTR_H */
 

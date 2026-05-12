@@ -13,7 +13,7 @@
 #include "ptr_table_tests.h"
 
 // Other headers.
-#include "crc.h"
+#include "crc16.h"
 #include "tlv_ptr.h"
 
 
@@ -317,7 +317,7 @@ static void set_tlv_crc (uint8_t *buffer, size_t size)
 {
     if ((NULL != buffer) && (size >= 4))
     {
-        uint16_t crc = crc_calculate (buffer, size - 2);
+        uint16_t crc = crc16_calculate (buffer, size - 2);
 
         buffer[size - 2] = (uint8_t)(crc & 0xFF);
         buffer[size - 1] = (uint8_t)((crc >> 8) & 0xFF);

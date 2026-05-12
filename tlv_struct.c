@@ -28,7 +28,7 @@
 #include "tlv_struct.h"
 
 /* External module headers */
-#include "crc.h"
+#include "crc16.h"
 #include "get_put_values.h"
 
 /* Private macros: all #define items, constants and function-like macros */
@@ -60,9 +60,9 @@
  * @return The number of bytes successfully parsed, or 0 if an error occurred.
  */
  size_t
- tlv_parse_struct (const void * p_buf,
+ tlv_parse_struct (CONST void * p_buf,
  				  unsigned int buf_size,
-                  const tlv_offset_entry_t * p_tlv_table,
+                  CONST tlv_offset_entry_t * p_tlv_table,
                   void * p_struct)
 {
     size_t bytes_consumed = 0;
@@ -78,8 +78,8 @@
     // Must have seemingly valid pointers.
     if ((NULL != p_buf) && (NULL != p_tlv_table) && (NULL != p_struct))
     {
-        const uint8_t * p_read  = NULL;
-        const uint8_t * p_end   = NULL;
+        CONST uint8_t * p_read  = NULL;
+        CONST uint8_t * p_end   = NULL;
         unsigned int    type    = 0;
         unsigned int    length  = 0;
 
@@ -87,10 +87,10 @@
         // end of the TLV data and then check the CRC.
 
         // Set p_read to start of buffer.
-        p_read = (const uint8_t *)p_buf;
+        p_read = (CONST uint8_t *)p_buf;
 
         // Set p_end to end of buffer.
-        p_end = (const uint8_t *)p_buf + buf_size;
+        p_end = (CONST uint8_t *)p_buf + buf_size;
 
         // Must have at least 3 more bytes to parse before the end of buffer.
         while ((p_read + 2) <= p_end)
@@ -110,8 +110,8 @@
                 else
                 {
                     // Calculate CRC over buffer up to this point.
-                    uint16_t calculated_crc = crc_calculate (p_buf,
-                        (size_t)(p_read - (const uint8_t *)p_buf));
+                    uint16_t calculated_crc = crc16_calculate (p_buf,
+                        (size_t)(p_read - (CONST uint8_t *)p_buf));
                     
                     // Get 2-byte CRC from buffer.
                     uint16_t crc = get_u16 (&p_read);
@@ -120,7 +120,7 @@
                     if (crc == calculated_crc)
                     {
                         bytes_consumed = (size_t)(p_read - 
-                            (const uint8_t *)p_buf);
+                            (CONST uint8_t *)p_buf);
                     }
                     else
                     {
@@ -157,10 +157,10 @@
             bool keep_scanning = true;
 
             // Reset pointer to start of buffer.
-            p_read = (const uint8_t *)p_buf;
+            p_read = (CONST uint8_t *)p_buf;
 
             // Reset end pointer to end of buffer.
-            p_end = (const uint8_t *)p_buf + buf_size;
+            p_end = (CONST uint8_t *)p_buf + buf_size;
 
             // Must have at least 3 more bytes to parse before the end of buffer.
             while ((p_read + 2) <= p_end)
@@ -281,8 +281,8 @@
 size_t
 tlv_write_struct (void * p_dest,
   				  unsigned int dest_size,
-                  const tlv_offset_entry_t * p_tlv_table,
-                  const void * p_struct)
+                  CONST tlv_offset_entry_t * p_tlv_table,
+                  CONST void * p_struct)
 {
     size_t bytes_written = 0;
 
@@ -328,7 +328,7 @@ tlv_write_struct (void * p_dest,
             put_u8 (&p_write, p_tlv_table[table_entry].type);
             put_u8 (&p_write, p_tlv_table[table_entry].length);
             put_data (&p_write,
-                      ((const uint8_t *)p_struct + p_tlv_table[table_entry].offset),
+                      ((CONST uint8_t *)p_struct + p_tlv_table[table_entry].offset),
                       p_tlv_table[table_entry].length);
 
             bytes_written = bytes_written + TLV_HEADER_SIZE + p_tlv_table[table_entry].length;
@@ -347,7 +347,7 @@ tlv_write_struct (void * p_dest,
                 put_u8 (&p_write, 0); // No length. This signals the end of data.
 
                 // Calculate CRC over the buffer.
-                uint16_t crc = crc_calculate (p_dest,
+                uint16_t crc = crc16_calculate (p_dest,
                                               (size_t)(p_write - (uint8_t *)p_dest));
 
                 // Add the 16-bit CRC at the end.

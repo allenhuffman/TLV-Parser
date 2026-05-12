@@ -1,5 +1,5 @@
 /**
- * @file crc.c
+ * @file crc16.c
  *
  * @author Allen C. Huffman
  * @copyright Copyright (c) 2026 Sub-Etha Software
@@ -22,31 +22,31 @@
 #include <stdint.h> // uint16_t
 
 /* This module's header (must be first among project headers) */
-#include "crc.h"
+#include "crc16.h"
 
 /* Public function definitions */
 
 /**
  * @brief Calculate CRC over a buffer.
  *
- * @param[in] buffer  Pointer to the data buffer.
- * @param[in] size    Size of the data buffer.
+ * @param[in] p_buf    Pointer to the data buffer.
+ * @param[in] buf_size Size of the data buffer.
  *
  * @return The calculated CRC value.
  */
 uint16_t
-crc_calculate (const void *p_buf, size_t buf_size)
+crc16_calculate (CONST void *p_buf, size_t buf_size)
 {
-    uint16_t crc = 0;
+    uint16_t crc16 = 0;
 
     // NULL check.
     if ((NULL != p_buf) && (0 != buf_size))
     {
         // Not NULL, and some data.
-        crc = crc_bytes(p_buf, buf_size, 0);
+        crc16 = crc16_bytes(p_buf, buf_size, 0);
     }
 
-    return crc;
+    return crc16;
 }
 
 /**
@@ -65,7 +65,7 @@ crc_calculate (const void *p_buf, size_t buf_size)
  * @return New CRC value.
  */
 uint16_t
-crc (uint8_t in_byte, uint16_t crc_running)
+crc16 (uint8_t in_byte, uint16_t crc_running)
 {
     uint8_t  bit_counter;
     uint16_t shifted;
@@ -102,7 +102,7 @@ crc (uint8_t in_byte, uint16_t crc_running)
  * @return The new CRC value.
  */
 uint16_t
-crc_bytes (const uint8_t * p_bytes, size_t length, uint16_t crc_running)
+crc16_bytes (CONST uint8_t * p_bytes, size_t length, uint16_t crc_running)
 {
     if (NULL != p_bytes)
     {
@@ -110,7 +110,7 @@ crc_bytes (const uint8_t * p_bytes, size_t length, uint16_t crc_running)
 
         for (byte_counter = 0; byte_counter < length; byte_counter++)
         {
-            crc_running = crc (p_bytes[byte_counter], crc_running);
+            crc_running = crc16 (p_bytes[byte_counter], crc_running);
         }
     }
 
@@ -127,13 +127,13 @@ crc_bytes (const uint8_t * p_bytes, size_t length, uint16_t crc_running)
  * @return The new CRC value.
  */
 uint16_t
-crc_string (const char * p_string, uint16_t crc_running)
+crc16_string (CONST char * p_string, uint16_t crc_running)
 {
     if (NULL != p_string)
     {
         while ('\0' != *p_string)
         {
-            crc_running = crc ((uint8_t)*p_string, crc_running);
+            crc_running = crc16 ((uint8_t)*p_string, crc_running);
             p_string++;
         }
     }

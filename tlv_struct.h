@@ -24,9 +24,16 @@
 
 /* Public macros: all #define items, constants and function-like macros */
 
+// CCS PCD compiler for PIC24 handles const differently that standard C
+// compilers. For environments like that, this macro can be modified to
+// remove the use of const in this module.
+#ifndef CONST
+    #define CONST const
+    //#define CONST
+#endif
+
 #define TLVSTRUCTENTRY(n,s,v) { n, sizeof(((s *)0)->v), offsetof(s, v) }
 #define TLVSTRUCTENTRYEND     { 0, 0, 0 }
-
 
 /* Public structs: concrete data layouts used by this module */
 
@@ -42,15 +49,15 @@ typedef struct
 
 /* Public function prototypes */
 
-size_t tlv_parse_struct (const void * p_buf,
+size_t tlv_parse_struct (CONST void * p_buf,
                          unsigned int buf_size,
-                         const tlv_offset_entry_t * p_tlv_table,
+                         CONST tlv_offset_entry_t * p_tlv_table,
                          void * p_struct);
 
 size_t tlv_write_struct (void * p_dest,
                          unsigned int dest_size,
-                         const tlv_offset_entry_t * p_tlv_table,
-                         const void * p_struct);
+                         CONST tlv_offset_entry_t * p_tlv_table,
+                         CONST void * p_struct);
 
 #endif /* TLV_STRUCT_H */
 

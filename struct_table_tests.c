@@ -14,7 +14,7 @@
 #include "struct_table_tests.h"
 
 // Other headers.
-#include "crc.h"
+#include "crc16.h"
 #include "tlv_struct.h"
 
 
@@ -57,15 +57,15 @@ static unsigned int g_test_fail = 0;
 // Prototypes
 /*---------------------------------------------------------------------------*/ 
 static void print_separator (void);
-static void hex_dump (const char *text, const void *ptr, size_t size);
+static void hex_dump (CONST char *text, CONST void *ptr, size_t size);
 static void set_tlv_crc (uint8_t *buffer, size_t size);
-static void expect_true (const char *name, bool condition);
-static void expect_values (const char *name,
-                           const message_t *value,
+static void expect_true (CONST char *name, bool condition);
+static void expect_values (CONST char *name,
+                           CONST message_t *value,
                            uint8_t exp_byte, uint16_t exp_word, uint32_t exp_dword,
-                           const char *exp_string);
+                           CONST char *exp_string);
 static void init_guarded_message (guarded_message_t *msg);
-static bool guarded_message_intact (const guarded_message_t *msg);
+static bool guarded_message_intact (CONST guarded_message_t *msg);
 
 static void run_struct_write_tests (void);
 static void run_struct_parse_tests (void);
@@ -92,7 +92,7 @@ static void run_struct_write_tests (void)
 {
     message_t message = { 0x11, 0x2222, 0x33333333U, "ABCDE" };
 
-    const tlv_offset_entry_t struct_table[] =
+    CONST tlv_offset_entry_t struct_table[] =
     {
         TLVSTRUCTENTRY(1, message_t, byte),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -130,7 +130,7 @@ static void run_struct_parse_tests (void)
 {
     message_t message = { 0 };
 
-    const tlv_offset_entry_t struct_table[] =
+    CONST tlv_offset_entry_t struct_table[] =
     {
         TLVSTRUCTENTRY(1, message_t, byte),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -139,7 +139,7 @@ static void run_struct_parse_tests (void)
         TLVSTRUCTENTRYEND
     };
 
-    const tlv_offset_entry_t struct_table_reordered[] =
+    CONST tlv_offset_entry_t struct_table_reordered[] =
     {
         TLVSTRUCTENTRY(4, message_t, string),
         TLVSTRUCTENTRY(2, message_t, word),
@@ -150,7 +150,7 @@ static void run_struct_parse_tests (void)
 
     guarded_message_t guarded = { 0 };
 
-    const tlv_offset_entry_t guarded_table[] =
+    CONST tlv_offset_entry_t guarded_table[] =
     {
         { 1, 1, offsetof(guarded_message_t, byte) },
         { 2, 2, offsetof(guarded_message_t, word) },
@@ -300,9 +300,9 @@ static void print_separator (void)
     printf ("--------------------------------------------------\n");
 }
 
-static void hex_dump (const char *text, const void *ptr, size_t size)
+static void hex_dump (CONST char *text, CONST void *ptr, size_t size)
 {
-    const uint8_t *bytes = (const uint8_t *)ptr;
+    CONST uint8_t *bytes = (CONST uint8_t *)ptr;
     size_t idx = 0;
 
     printf ("%s: ", text);
@@ -317,14 +317,14 @@ static void set_tlv_crc (uint8_t *buffer, size_t size)
 {
     if ((NULL != buffer) && (size >= 4))
     {
-        uint16_t crc = crc_calculate (buffer, size - 2);
+        uint16_t crc = crc16_calculate (buffer, size - 2);
 
         buffer[size - 2] = (uint8_t)(crc & 0xFF);
         buffer[size - 1] = (uint8_t)((crc >> 8) & 0xFF);
     }
 }
 
-static void expect_true (const char *name, bool condition)
+static void expect_true (CONST char *name, bool condition)
 {
     if (condition)
     {
@@ -338,10 +338,10 @@ static void expect_true (const char *name, bool condition)
     }
 }
 
-static void expect_values (const char *name,
-                           const message_t *value,
+static void expect_values (CONST char *name,
+                           CONST message_t *value,
                            uint8_t exp_byte, uint16_t exp_word, uint32_t exp_dword,
-                           const char *exp_string)
+                           CONST char *exp_string)
 {
     bool ok = true;
 
@@ -374,7 +374,7 @@ static void init_guarded_message (guarded_message_t *msg)
     }
 }
 
-static bool guarded_message_intact (const guarded_message_t *msg)
+static bool guarded_message_intact (CONST guarded_message_t *msg)
 {
     bool intact = false;
 

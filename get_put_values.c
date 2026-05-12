@@ -34,7 +34,7 @@
  * @param[in] data_size Size of the buffer where variable will be stored.
  */
 void
-get_data (const uint8_t **pp_read, void *p_data, unsigned int data_size)
+get_data (CONST uint8_t **pp_read, void *p_data, unsigned int data_size)
 {
     memcpy (p_data, *pp_read, data_size);
     *pp_read += data_size;
@@ -49,7 +49,7 @@ get_data (const uint8_t **pp_read, void *p_data, unsigned int data_size)
  * @return The value read from the buffer.
  */
 uint8_t
-get_u8 (const uint8_t **pp_read)
+get_u8 (CONST uint8_t **pp_read)
 {
     uint8_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -65,7 +65,7 @@ get_u8 (const uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 uint16_t
-get_u16 (const uint8_t **pp_read)
+get_u16 (CONST uint8_t **pp_read)
 {
     uint16_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -82,7 +82,7 @@ get_u16 (const uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 uint32_t
-get_u32 (const uint8_t **pp_read)
+get_u32 (CONST uint8_t **pp_read)
 {
     uint32_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -99,7 +99,7 @@ get_u32 (const uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 float
-get_float (const uint8_t **pp_read)
+get_float (CONST uint8_t **pp_read)
 {
     float value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -116,7 +116,7 @@ get_float (const uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 double
-get_double (const uint8_t **pp_read)
+get_double (CONST uint8_t **pp_read)
 {
     double value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -133,7 +133,7 @@ get_double (const uint8_t **pp_read)
  * @param[in] data_size Size of the data to write.
  */
 void
-put_data (uint8_t ** pp_write, const void *p_data, unsigned int data_size)
+put_data (uint8_t ** pp_write, CONST void *p_data, unsigned int data_size)
 {
     memcpy (*pp_write, p_data, data_size);
     *pp_write += data_size;
