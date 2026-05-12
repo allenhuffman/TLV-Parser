@@ -40,16 +40,16 @@ static unsigned int S_test_fail = 0;
 // Prototypes
 /*---------------------------------------------------------------------------*/
 static void print_separator (void);
-static void hex_dump (const char *text, const void *ptr, size_t size);
+static void hex_dump (CONST char *text, CONST void *ptr, size_t size);
 static void set_tlv_crc (uint8_t *buffer, size_t size);
-static void expect_true (const char *name, bool condition);
+static void expect_true (CONST char *name, bool condition);
 static void init_guarded_targets (guarded_targets_t *targets);
-static bool guarded_targets_intact (const guarded_targets_t *targets);
-static void expect_values (const char *name,
+static bool guarded_targets_intact (CONST guarded_targets_t *targets);
+static void expect_values (CONST char *name,
                            uint8_t byte, uint16_t word, uint32_t dword,
-                           const char *string,
+                           CONST char *string,
                            uint8_t exp_byte, uint16_t exp_word, uint32_t exp_dword,
-                           const char *exp_string);
+                           CONST char *exp_string);
 
 static void run_ptr_table_write_tests (void);
 static void run_ptr_table_parse_tests (void);
@@ -300,9 +300,9 @@ static void print_separator (void)
     printf ("--------------------------------------------------\n");
 }
 
-static void hex_dump (const char *text, const void *ptr, size_t size)
+static void hex_dump (CONST char *text, CONST void *ptr, size_t size)
 {
-    const uint8_t *bytes = (const uint8_t *)ptr;
+    CONST uint8_t *bytes = (CONST uint8_t *)ptr;
     size_t idx = 0;
 
     printf ("%s: ", text);
@@ -344,7 +344,7 @@ static void init_guarded_targets (guarded_targets_t *targets)
     }
 }
 
-static bool guarded_targets_intact (const guarded_targets_t *targets)
+static bool guarded_targets_intact (CONST guarded_targets_t *targets)
 {
     bool intact = false;
 
@@ -360,7 +360,7 @@ static bool guarded_targets_intact (const guarded_targets_t *targets)
     return intact;
 }
 
-static void expect_true (const char *name, bool condition)
+static void expect_true (CONST char *name, bool condition)
 {
     if (condition)
     {
@@ -374,11 +374,11 @@ static void expect_true (const char *name, bool condition)
     }
 }
 
-static void expect_values (const char *name,
+static void expect_values (CONST char *name,
                            uint8_t byte, uint16_t word, uint32_t dword,
-                           const char *string,
+                           CONST char *string,
                            uint8_t exp_byte, uint16_t exp_word, uint32_t exp_dword,
-                           const char *exp_string)
+                           CONST char *exp_string)
 {
     bool ok = true;
 
