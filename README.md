@@ -94,7 +94,7 @@ The new version requires variables to be elements of a structure, and the table 
 
 Confusing? Well, read the rest of this (mostly written by the robot) and see if it helps. I will try to add some examples to this repo when I get a moment.
 
-# Description #
+# Description (written mostly by AI) #
 
 Lightweight C11 TLV (Type-Length-Value) parser/writer with CRC-16/XMODEM validation.
 
