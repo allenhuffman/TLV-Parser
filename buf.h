@@ -5,7 +5,7 @@
  * @note Origin: https://github.com/allenhuffman
  * @note This file follows the Barr-C Embedded C Coding Standard.
  *
- * @brief Public interface for the buf_read_buf_write_values module.
+ * @brief Public interface for the buf module.
  *
  * @details This module is implemented according to the Barr Group
  * Embedded C Coding Standard (Barr-C).

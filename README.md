@@ -113,7 +113,7 @@ The code is split by API style:
 Shared helpers are:
 
 - CRC support: `crc16.c` + `crc16.h`
-- Buffer get/put helpers: `get_put_values.c` + `get_put_values.h`
+- Buffer read/write helpers: `buf.c` + `buf.h`
 
 ## Features
 
@@ -131,7 +131,7 @@ Shared helpers are:
 - `tlv_struct.h`: Struct-offset API, macros, and typedefs.
 - `tlv_struct.c`: Struct-offset parser/writer implementation.
 - `crc16.c`, `crc16.h`: CRC-16/XMODEM routines.
-- `get_put_values.c`, `get_put_values.h`: Byte/word read-write helpers.
+- `buf.c`, `buf.h`: Byte/word read/write helpers.
 - `ptr_table_tests.c`: Pointer-table test suite.
 - `struct_table_tests.c`: Struct-table test suite.
 - `main.c`: Test runner entry point.
