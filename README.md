@@ -5,6 +5,7 @@ Github Copilot created the tests and the bulk of this README "Description" secti
 
 * In order to compile this on the CCS PCD compiler for PIC24, the "const" references have to be disabled. To make this easier to do, the header files now have a "#define CONST" that can be enabled or disabled.
 * For using on the CCS PCD PIC24 compiler, version 5.123 has an issue with comparing values that were passed in to a function in a structure. A workaround has been applied to this file.
+* I am using this project as a way to get used to the BARR-C Embedded C coding standard. It is not quite there yet, but I am working on it.
 
 # TLV-Parser
 
