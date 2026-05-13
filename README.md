@@ -1,9 +1,11 @@
 # TLV-Parser README
 
-## Note from a Human
+## Notes from a Human
 Github Copilot created the tests and the bulk of this README "Description" section, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
 
 * In order to compile this on the CCS PCD compiler for PIC24, the "const" references have to be disabled. To make this easier to do, the header files now have a "#define CONST" that can be enabled or disabled.
+* For using on the CCS PCD PIC24 compiler, version 5.123 has an issue with comparing values that were passed in to a function in a structure. A workaround has been applied to this file.
+* I am using this project as a way to get used to the BARR-C Embedded C coding standard. It is not quite there yet, but I am working on it.
 
 # TLV-Parser
 
@@ -92,7 +94,7 @@ The new version requires variables to be elements of a structure, and the table 
 
 Confusing? Well, read the rest of this (mostly written by the robot) and see if it helps. I will try to add some examples to this repo when I get a moment.
 
-# Description #
+# Description (written mostly by AI) #
 
 Lightweight C11 TLV (Type-Length-Value) parser/writer with CRC-16/XMODEM validation.
 
@@ -110,7 +112,7 @@ The code is split by API style:
 
 Shared helpers are:
 
-- CRC support: `crc.c` + `crc.h`
+- CRC support: `crc16.c` + `crc16.h`
 - Buffer get/put helpers: `get_put_values.c` + `get_put_values.h`
 
 ## Features
@@ -128,7 +130,7 @@ Shared helpers are:
 - `tlv_ptr.c`: Pointer-table parser/writer implementation.
 - `tlv_struct.h`: Struct-offset API, macros, and typedefs.
 - `tlv_struct.c`: Struct-offset parser/writer implementation.
-- `crc.c`, `crc.h`: CRC-16/XMODEM routines.
+- `crc16.c`, `crc16.h`: CRC-16/XMODEM routines.
 - `get_put_values.c`, `get_put_values.h`: Byte/word read-write helpers.
 - `ptr_table_tests.c`: Pointer-table test suite.
 - `struct_table_tests.c`: Struct-table test suite.
