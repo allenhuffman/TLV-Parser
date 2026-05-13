@@ -29,7 +29,7 @@
 
 /* External module headers */
 #include "crc16.h"
-#include "get_put_values.h"
+#include "buf.h"
 
 /* Private macros: all #define items, constants and function-like macros */
 // 0 = No debug messages, 1 = Debug messages, 2 = Even more debug messages.
@@ -57,14 +57,14 @@
  * @return The number of bytes successfully parsed, or 0 if an error occurred.
  */
 size_t
-tlv_parse_ptr (CONST void * p_buf,
-               unsigned int buf_size,
-               CONST tlv_ptr_entry_t * p_tlv_table)
+tlv_decode_ptr (CONST void * p_buf,
+                unsigned int buf_size,
+                CONST tlv_ptr_entry_t * p_tlv_table)
 {
     size_t bytes_consumed = 0;
 
 #if (DEBUG_TLV > 1)
-    DEBUG_PRINTF ("tlv_parse_ptr (0x%x, %u, 0x%x)\r\n",
+    DEBUG_PRINTF ("tlv_decode_ptr (0x%x, %u, 0x%x)\r\n",
                   (unsigned int)((uintptr_t)p_buf),
                   buf_size, (unsigned int)(uintptr_t)p_tlv_table);
 #endif
@@ -90,8 +90,8 @@ tlv_parse_ptr (CONST void * p_buf,
         while ((p_read + 2) <= p_end)
         {
             // Get type byte and length byte.
-            type = get_u8 (&p_read);
-            length = get_u8 (&p_read);
+            type = buf_read_u8 (&p_read);
+            length = buf_read_u8 (&p_read);
 
             // If both are zero, it is the end of the TLV data.
             if ((0 == type) && (0 == length))
@@ -104,11 +104,11 @@ tlv_parse_ptr (CONST void * p_buf,
                 else
                 {
                     // Calculate CRC over buffer up to this point.
-                    uint16_t calculated_crc = crc16_calculate (p_buf,
+                    uint16_t calculated_crc = crc16_compute (p_buf,
                         (size_t)(p_read - (CONST uint8_t *)p_buf));
                     
                     // Get 2-byte CRC from buffer.
-                    uint16_t crc = get_u16 (&p_read);
+                    uint16_t crc = buf_read_u16 (&p_read);
 
                     // If it matches, update bytes_consumed value.
                     if (crc == calculated_crc)
@@ -163,8 +163,8 @@ tlv_parse_ptr (CONST void * p_buf,
                 bool type_found = false;
 #endif
                 // Get type byte and length byte.
-                type = get_u8 (&p_read);
-                length = get_u8 (&p_read);
+                type = buf_read_u8 (&p_read);
+                length = buf_read_u8 (&p_read);
 
                 // If both are zero, it is the end of the TLV data.
                 if ((0 == type) && (0 == length))
@@ -273,14 +273,14 @@ tlv_parse_ptr (CONST void * p_buf,
  * @return The number of bytes successfully written, or 0 if an error occurred.
  */
 size_t
-tlv_write_ptr (void * p_dest,
-               unsigned int dest_size,
-               CONST tlv_ptr_entry_t * p_tlv_table)
+tlv_encode_ptr (void * p_dest,
+                unsigned int dest_size,
+                CONST tlv_ptr_entry_t * p_tlv_table)
 {
     size_t bytes_written = 0;
 
 #if (DEBUG_TLV > 1)
-    DEBUG_PRINTF ("tlv_write_ptr (0x%x, %u, 0x%x)\r\n",
+    DEBUG_PRINTF ("tlv_encode_ptr (0x%x, %u, 0x%x)\r\n",
                   (unsigned int)(uintptr_t)p_dest,
                   dest_size, (unsigned int)(uintptr_t)p_tlv_table);
 #endif
@@ -317,9 +317,9 @@ tlv_write_ptr (void * p_dest,
                 break;
             }
 
-            put_u8 (&p_write, p_tlv_table[table_entry].type);
-            put_u8 (&p_write, p_tlv_table[table_entry].length);
-            put_data (&p_write,
+            buf_write_u8 (&p_write, p_tlv_table[table_entry].type);
+            buf_write_u8 (&p_write, p_tlv_table[table_entry].length);
+            buf_write_data (&p_write,
 			          p_tlv_table[table_entry].value,
 					  p_tlv_table[table_entry].length);
 
@@ -335,15 +335,15 @@ tlv_write_ptr (void * p_dest,
             // Also include room for 16-bit CRC.
             if ((p_write + TLV_HEADER_SIZE + TLV_CRC_SIZE) <= p_end)
             {
-                put_u8 (&p_write, 0); // No type.
-                put_u8 (&p_write, 0); // No length. This signals the end of data.
+                buf_write_u8 (&p_write, 0); // No type.
+                buf_write_u8 (&p_write, 0); // No length. This signals the end of data.
 
                 // Calculate CRC over the buffer.
-                uint16_t crc = crc16_calculate (p_dest,
+                uint16_t crc = crc16_compute (p_dest,
                                               (size_t)(p_write - (uint8_t *)p_dest));
 
                 // Add the 16-bit CRC at the end.
-                put_u16 (&p_write, crc);
+                buf_write_u16 (&p_write, crc);
 				
 				bytes_written = bytes_written + TLV_HEADER_SIZE + TLV_CRC_SIZE;
 

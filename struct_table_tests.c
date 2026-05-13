@@ -108,10 +108,10 @@ static void run_struct_write_tests (void)
     print_separator ();
     printf ("Struct write tests\n");
 
-    bytes_written = tlv_write_struct (buffer_small, sizeof(buffer_small), struct_table, &message);
+    bytes_written = tlv_encode_offset (buffer_small, sizeof(buffer_small), struct_table, &message);
     expect_true ("struct write small buffer fails", bytes_written == 0);
 
-    bytes_written = tlv_write_struct (buffer_large, sizeof(buffer_large), struct_table, &message);
+    bytes_written = tlv_encode_offset (buffer_large, sizeof(buffer_large), struct_table, &message);
     expect_true ("struct write large buffer succeeds", bytes_written == 25);
 
     if (bytes_written != 0)
@@ -119,10 +119,10 @@ static void run_struct_write_tests (void)
         hex_dump ("struct write buffer", buffer_large, bytes_written);
 
         expect_true ("struct write exact-fit succeeds",
-                     tlv_write_struct (buffer_large, (unsigned int)bytes_written, struct_table, &message) == bytes_written);
+                     tlv_encode_offset (buffer_large, (unsigned int)bytes_written, struct_table, &message) == bytes_written);
 
         expect_true ("struct write exact-fit-1 fails",
-                     tlv_write_struct (buffer_large, (unsigned int)(bytes_written - 1), struct_table, &message) == 0);
+                     tlv_encode_offset (buffer_large, (unsigned int)(bytes_written - 1), struct_table, &message) == 0);
     }
 }
 
@@ -250,46 +250,46 @@ static void run_struct_parse_tests (void)
     printf ("Struct parse tests\n");
 
     init_guarded_message (&guarded);
-    bytes_parsed = tlv_parse_struct (buffer_bad_crc, sizeof(buffer_bad_crc), guarded_table, &guarded);
+    bytes_parsed = tlv_decode_offset (buffer_bad_crc, sizeof(buffer_bad_crc), guarded_table, &guarded);
     expect_true ("struct parse bad CRC fails", bytes_parsed == 0);
     expect_true ("struct parse bad CRC keeps guards", guarded_message_intact (&guarded));
 
     init_guarded_message (&guarded);
-    bytes_parsed = tlv_parse_struct (buffer_bad_truncated, sizeof(buffer_bad_truncated), guarded_table, &guarded);
+    bytes_parsed = tlv_decode_offset (buffer_bad_truncated, sizeof(buffer_bad_truncated), guarded_table, &guarded);
     expect_true ("struct parse truncated fails", bytes_parsed == 0);
     expect_true ("struct parse truncated keeps guards", guarded_message_intact (&guarded));
 
     memset (&message, 0, sizeof(message));
-    bytes_parsed = tlv_parse_struct (buffer_unknown_types, sizeof(buffer_unknown_types), struct_table, &message);
+    bytes_parsed = tlv_decode_offset (buffer_unknown_types, sizeof(buffer_unknown_types), struct_table, &message);
     expect_true ("struct parse unknown types succeeds", bytes_parsed == sizeof(buffer_unknown_types));
     expect_values ("struct parse unknown types values", &message,
                    0x11, 0x2222, 0x33333333U, "ABCDE");
 
     init_guarded_message (&guarded);
-    bytes_parsed = tlv_parse_struct (buffer_bad_lengths, sizeof(buffer_bad_lengths), guarded_table, &guarded);
+    bytes_parsed = tlv_decode_offset (buffer_bad_lengths, sizeof(buffer_bad_lengths), guarded_table, &guarded);
     expect_true ("struct parse overrun length fails", bytes_parsed == 0);
     expect_true ("struct parse overrun length keeps guards", guarded_message_intact (&guarded));
 
     init_guarded_message (&guarded);
-    bytes_parsed = tlv_parse_struct (buffer_bad_known_length, sizeof(buffer_bad_known_length), guarded_table, &guarded);
+    bytes_parsed = tlv_decode_offset (buffer_bad_known_length, sizeof(buffer_bad_known_length), guarded_table, &guarded);
     expect_true ("struct parse known type wrong length fails", bytes_parsed == 0);
     expect_true ("struct parse known type wrong length keeps guards", guarded_message_intact (&guarded));
 
     memset (&message, 0, sizeof(message));
-    bytes_parsed = tlv_parse_struct (buffer_duplicate_type, sizeof(buffer_duplicate_type), struct_table, &message);
+    bytes_parsed = tlv_decode_offset (buffer_duplicate_type, sizeof(buffer_duplicate_type), struct_table, &message);
     expect_true ("struct parse duplicate type succeeds", bytes_parsed == sizeof(buffer_duplicate_type));
     expect_values ("struct parse duplicate type values", &message,
                    0x11, 0x9999, 0x33333333U, "ABCDE");
 
     memset (&message, 0, sizeof(message));
     memcpy (message.string, "ZZZZZ", sizeof(message.string));
-    bytes_parsed = tlv_parse_struct (buffer_missing_type, sizeof(buffer_missing_type), struct_table, &message);
+    bytes_parsed = tlv_decode_offset (buffer_missing_type, sizeof(buffer_missing_type), struct_table, &message);
     expect_true ("struct parse missing type succeeds", bytes_parsed == sizeof(buffer_missing_type));
     expect_values ("struct parse missing type values", &message,
                    0x11, 0x2222, 0x33333333U, "ZZZZZ");
 
     memset (&message, 0, sizeof(message));
-    bytes_parsed = tlv_parse_struct (buffer_reordered_table, sizeof(buffer_reordered_table), struct_table_reordered, &message);
+    bytes_parsed = tlv_decode_offset (buffer_reordered_table, sizeof(buffer_reordered_table), struct_table_reordered, &message);
     expect_true ("struct parse reordered table succeeds", bytes_parsed == sizeof(buffer_reordered_table));
     expect_values ("struct parse reordered table values", &message,
                    0x11, 0x2222, 0x33333333U, "ABCDE");
@@ -317,7 +317,7 @@ static void set_tlv_crc (uint8_t *buffer, size_t size)
 {
     if ((NULL != buffer) && (size >= 4))
     {
-        uint16_t crc = crc16_calculate (buffer, size - 2);
+        uint16_t crc = crc16_compute (buffer, size - 2);
 
         buffer[size - 2] = (uint8_t)(crc & 0xFF);
         buffer[size - 1] = (uint8_t)((crc >> 8) & 0xFF);

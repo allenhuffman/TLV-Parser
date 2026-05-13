@@ -31,13 +31,8 @@
 #endif
 
 /* Public function prototypes */
-uint16_t crc16_calculate(CONST void * p_buf, size_t buf_size);
+uint16_t crc16_compute(CONST void * p_buf, size_t buf_size);
 
-uint16_t crc16(uint8_t in_byte, uint16_t crc_running);
-
-uint16_t crc16_bytes(CONST uint8_t * p_bytes, size_t length, uint16_t crc_running);
-
-uint16_t crc16_string(CONST char * p_string, uint16_t crc_running);
 
 #endif /* CRC16_H */
 

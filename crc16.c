@@ -1,5 +1,5 @@
 /**
- * @file crc16.c
+ * @file crc16_update.c
  *
  * @author Allen C. Huffman
  * @copyright Copyright (c) 2026 Sub-Etha Software
@@ -24,6 +24,10 @@
 /* This module's header (must be first among project headers) */
 #include "crc16.h"
 
+/* Private function prototypes */
+static uint16_t crc16_update(uint8_t in_byte, uint16_t crc_running);
+static uint16_t crc16_update_bytes(CONST uint8_t * p_bytes, size_t length, uint16_t crc_running);
+
 /* Public function definitions */
 
 /**
@@ -35,18 +39,18 @@
  * @return The calculated CRC value.
  */
 uint16_t
-crc16_calculate (CONST void *p_buf, size_t buf_size)
+crc16_compute (CONST void *p_buf, size_t buf_size)
 {
-    uint16_t crc16 = 0;
+    uint16_t crc = 0;
 
     // NULL check.
     if ((NULL != p_buf) && (0 != buf_size))
     {
         // Not NULL, and some data.
-        crc16 = crc16_bytes(p_buf, buf_size, 0);
+        crc = crc16_update_bytes(p_buf, buf_size, 0);
     }
 
-    return crc16;
+    return crc;
 }
 
 /**
@@ -64,8 +68,8 @@ crc16_calculate (CONST void *p_buf, size_t buf_size)
  *
  * @return New CRC value.
  */
-uint16_t
-crc16 (uint8_t in_byte, uint16_t crc_running)
+static uint16_t
+crc16_update (uint8_t in_byte, uint16_t crc_running)
 {
     uint8_t  bit_counter;
     uint16_t shifted;
@@ -101,8 +105,8 @@ crc16 (uint8_t in_byte, uint16_t crc_running)
  *
  * @return The new CRC value.
  */
-uint16_t
-crc16_bytes (CONST uint8_t * p_bytes, size_t length, uint16_t crc_running)
+static uint16_t
+crc16_update_bytes (CONST uint8_t * p_bytes, size_t length, uint16_t crc_running)
 {
     if (NULL != p_bytes)
     {
@@ -110,31 +114,7 @@ crc16_bytes (CONST uint8_t * p_bytes, size_t length, uint16_t crc_running)
 
         for (byte_counter = 0; byte_counter < length; byte_counter++)
         {
-            crc_running = crc16 (p_bytes[byte_counter], crc_running);
-        }
-    }
-
-    return crc_running;
-}
-
-
-/**
- * @brief Calculate CRC over a null-terminated string.
- *
- * @param[in] p_string   Pointer to a null-terminated string.
- * @param[in] crc_running Current CRC value.
- *
- * @return The new CRC value.
- */
-uint16_t
-crc16_string (CONST char * p_string, uint16_t crc_running)
-{
-    if (NULL != p_string)
-    {
-        while ('\0' != *p_string)
-        {
-            crc_running = crc16 ((uint8_t)*p_string, crc_running);
-            p_string++;
+            crc_running = crc16_update (p_bytes[byte_counter], crc_running);
         }
     }
 

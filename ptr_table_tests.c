@@ -94,10 +94,10 @@ static void run_ptr_table_write_tests (void)
     print_separator ();
     printf ("Write tests\n");
 
-    bytes_written = tlv_write_ptr (buffer_small, sizeof(buffer_small), tlv_table);
+    bytes_written = tlv_encode_ptr (buffer_small, sizeof(buffer_small), tlv_table);
     expect_true ("write small buffer fails", bytes_written == 0);
 
-    bytes_written = tlv_write_ptr (buffer_large, sizeof(buffer_large), tlv_table);
+    bytes_written = tlv_encode_ptr (buffer_large, sizeof(buffer_large), tlv_table);
     expect_true ("write large buffer succeeds", bytes_written == 25);
 
     if (bytes_written != 0)
@@ -105,10 +105,10 @@ static void run_ptr_table_write_tests (void)
         hex_dump ("write buffer", buffer_large, bytes_written);
 
         expect_true ("write exact-fit succeeds",
-                     tlv_write_ptr (buffer_large, (unsigned int)bytes_written, tlv_table) == bytes_written);
+                     tlv_encode_ptr (buffer_large, (unsigned int)bytes_written, tlv_table) == bytes_written);
 
         expect_true ("write exact-fit-1 fails",
-                     tlv_write_ptr (buffer_large, (unsigned int)(bytes_written - 1), tlv_table) == 0);
+                     tlv_encode_ptr (buffer_large, (unsigned int)(bytes_written - 1), tlv_table) == 0);
     }
 }
 
@@ -239,12 +239,12 @@ static void run_ptr_table_parse_tests (void)
     printf ("Parse tests\n");
 
     init_guarded_targets (&guarded);
-    bytes_parsed = tlv_parse_ptr (buffer_bad_crc, sizeof(buffer_bad_crc), guarded_table);
+    bytes_parsed = tlv_decode_ptr (buffer_bad_crc, sizeof(buffer_bad_crc), guarded_table);
     expect_true ("parse bad CRC fails", bytes_parsed == 0);
     expect_true ("parse bad CRC keeps guards", guarded_targets_intact (&guarded));
 
     init_guarded_targets (&guarded);
-    bytes_parsed = tlv_parse_ptr (buffer_bad_truncated, sizeof(buffer_bad_truncated), guarded_table);
+    bytes_parsed = tlv_decode_ptr (buffer_bad_truncated, sizeof(buffer_bad_truncated), guarded_table);
     expect_true ("parse truncated fails", bytes_parsed == 0);
     expect_true ("parse truncated keeps guards", guarded_targets_intact (&guarded));
 
@@ -252,18 +252,18 @@ static void run_ptr_table_parse_tests (void)
     word = 0;
     dword = 0;
     memset (string, 0, sizeof(string));
-    bytes_parsed = tlv_parse_ptr (buffer_unknown_types, sizeof(buffer_unknown_types), tlv_table);
+    bytes_parsed = tlv_decode_ptr (buffer_unknown_types, sizeof(buffer_unknown_types), tlv_table);
     expect_true ("parse unknown types succeeds", bytes_parsed == sizeof(buffer_unknown_types));
     expect_values ("parse unknown types values", byte, word, dword, string,
                    0x11, 0x2222, 0x33333333U, "ABCDE");
 
     init_guarded_targets (&guarded);
-    bytes_parsed = tlv_parse_ptr (buffer_bad_lengths, sizeof(buffer_bad_lengths), guarded_table);
+    bytes_parsed = tlv_decode_ptr (buffer_bad_lengths, sizeof(buffer_bad_lengths), guarded_table);
     expect_true ("parse overrun length fails", bytes_parsed == 0);
     expect_true ("parse overrun length keeps guards", guarded_targets_intact (&guarded));
 
     init_guarded_targets (&guarded);
-    bytes_parsed = tlv_parse_ptr (buffer_bad_known_length, sizeof(buffer_bad_known_length), guarded_table);
+    bytes_parsed = tlv_decode_ptr (buffer_bad_known_length, sizeof(buffer_bad_known_length), guarded_table);
     expect_true ("parse known type wrong length fails", bytes_parsed == 0);
     expect_true ("parse known type wrong length keeps guards", guarded_targets_intact (&guarded));
 
@@ -271,7 +271,7 @@ static void run_ptr_table_parse_tests (void)
     word = 0;
     dword = 0;
     memset (string, 0, sizeof(string));
-    bytes_parsed = tlv_parse_ptr (buffer_duplicate_type, sizeof(buffer_duplicate_type), tlv_table);
+    bytes_parsed = tlv_decode_ptr (buffer_duplicate_type, sizeof(buffer_duplicate_type), tlv_table);
     expect_true ("parse duplicate type succeeds", bytes_parsed == sizeof(buffer_duplicate_type));
     expect_values ("parse duplicate type values", byte, word, dword, string,
                    0x11, 0x9999, 0x33333333U, "ABCDE");
@@ -280,7 +280,7 @@ static void run_ptr_table_parse_tests (void)
     word = 0;
     dword = 0;
     memcpy (string, "ZZZZZ", sizeof(string));
-    bytes_parsed = tlv_parse_ptr (buffer_missing_type, sizeof(buffer_missing_type), tlv_table);
+    bytes_parsed = tlv_decode_ptr (buffer_missing_type, sizeof(buffer_missing_type), tlv_table);
     expect_true ("parse missing type succeeds", bytes_parsed == sizeof(buffer_missing_type));
     expect_values ("parse missing type values", byte, word, dword, string,
                    0x11, 0x2222, 0x33333333U, "ZZZZZ");
@@ -289,7 +289,7 @@ static void run_ptr_table_parse_tests (void)
     word = 0;
     dword = 0;
     memset (string, 0, sizeof(string));
-    bytes_parsed = tlv_parse_ptr (buffer_reordered_table, sizeof(buffer_reordered_table), tlv_table_reordered);
+    bytes_parsed = tlv_decode_ptr (buffer_reordered_table, sizeof(buffer_reordered_table), tlv_table_reordered);
     expect_true ("parse reordered table succeeds", bytes_parsed == sizeof(buffer_reordered_table));
     expect_values ("parse reordered table values", byte, word, dword, string,
                    0x11, 0x2222, 0x33333333U, "ABCDE");
@@ -317,7 +317,7 @@ static void set_tlv_crc (uint8_t *buffer, size_t size)
 {
     if ((NULL != buffer) && (size >= 4))
     {
-        uint16_t crc = crc16_calculate (buffer, size - 2);
+        uint16_t crc = crc16_compute (buffer, size - 2);
 
         buffer[size - 2] = (uint8_t)(crc & 0xFF);
         buffer[size - 1] = (uint8_t)((crc >> 8) & 0xFF);

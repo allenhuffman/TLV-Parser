@@ -1,5 +1,5 @@
 /**
- * @file get_put_values.c
+ * @file buf.c
  *
  * @author Allen C. Huffman
  * @copyright Copyright (c) 2026 Sub-Etha Software
@@ -22,7 +22,7 @@
 #include <string.h> // for memset(), memcpy()
 
 /* This module's header (must be first among project headers) */
-#include "get_put_values.h"
+#include "buf.h"
 
 /* Public function definitions */
 
@@ -34,7 +34,7 @@
  * @param[in] data_size Size of the buffer where variable will be stored.
  */
 void
-get_data (CONST uint8_t **pp_read, void *p_data, unsigned int data_size)
+buf_read_data (CONST uint8_t **pp_read, void *p_data, unsigned int data_size)
 {
     memcpy (p_data, *pp_read, data_size);
     *pp_read += data_size;
@@ -49,7 +49,7 @@ get_data (CONST uint8_t **pp_read, void *p_data, unsigned int data_size)
  * @return The value read from the buffer.
  */
 uint8_t
-get_u8 (CONST uint8_t **pp_read)
+buf_read_u8 (CONST uint8_t **pp_read)
 {
     uint8_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -65,7 +65,7 @@ get_u8 (CONST uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 uint16_t
-get_u16 (CONST uint8_t **pp_read)
+buf_read_u16 (CONST uint8_t **pp_read)
 {
     uint16_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -82,7 +82,7 @@ get_u16 (CONST uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 uint32_t
-get_u32 (CONST uint8_t **pp_read)
+buf_read_u32 (CONST uint8_t **pp_read)
 {
     uint32_t value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -99,7 +99,7 @@ get_u32 (CONST uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 float
-get_float (CONST uint8_t **pp_read)
+buf_read_float (CONST uint8_t **pp_read)
 {
     float value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -116,7 +116,7 @@ get_float (CONST uint8_t **pp_read)
  * @return The value read from the buffer.
  */
 double
-get_double (CONST uint8_t **pp_read)
+buf_read_double (CONST uint8_t **pp_read)
 {
     double value;
     memcpy (&value, *pp_read, sizeof (value));
@@ -133,7 +133,7 @@ get_double (CONST uint8_t **pp_read)
  * @param[in] data_size Size of the data to write.
  */
 void
-put_data (uint8_t ** pp_write, CONST void *p_data, unsigned int data_size)
+buf_write_data (uint8_t ** pp_write, CONST void *p_data, unsigned int data_size)
 {
     memcpy (*pp_write, p_data, data_size);
     *pp_write += data_size;
@@ -148,7 +148,7 @@ put_data (uint8_t ** pp_write, CONST void *p_data, unsigned int data_size)
  * @return None.
  */
 void
-put_u8 (uint8_t **pp_write, uint8_t value)
+buf_write_u8 (uint8_t **pp_write, uint8_t value)
 {
     memcpy (*pp_write, &value, sizeof (value));
     *pp_write += sizeof (value);
@@ -164,7 +164,7 @@ put_u8 (uint8_t **pp_write, uint8_t value)
  * @return None.
  */
 void
-put_u16 (uint8_t **pp_write, uint16_t value)
+buf_write_u16 (uint8_t **pp_write, uint16_t value)
 {
     memcpy (*pp_write, &value, sizeof (value));
     *pp_write += sizeof (value);
@@ -180,7 +180,7 @@ put_u16 (uint8_t **pp_write, uint16_t value)
  * @return None.
  */
 void
-put_u32 (uint8_t **pp_write, uint32_t value)
+buf_write_u32 (uint8_t **pp_write, uint32_t value)
 {
     memcpy (*pp_write, &value, sizeof (value));
     *pp_write += sizeof (value);
@@ -196,7 +196,7 @@ put_u32 (uint8_t **pp_write, uint32_t value)
  * @return None.
  */
 void
-put_float (uint8_t **pp_write, float value)
+buf_write_float (uint8_t **pp_write, float value)
 {
     memcpy (*pp_write, &value, sizeof (value));
     *pp_write += sizeof (value);
@@ -212,7 +212,7 @@ put_float (uint8_t **pp_write, float value)
  * @return None.
  */
 void
-put_double (uint8_t **pp_write, double value)
+buf_write_double (uint8_t **pp_write, double value)
 {
     memcpy (*pp_write, &value, sizeof (value));
     *pp_write += sizeof (value);

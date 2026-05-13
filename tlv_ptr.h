@@ -50,13 +50,13 @@ typedef struct
 
 /* Public function prototypes */
 
-size_t tlv_parse_ptr (CONST void * p_buf,
-                      unsigned int buf_size,
-                      CONST tlv_ptr_entry_t * p_tlv_table);
+size_t tlv_decode_ptr (CONST void * p_buf,
+                       unsigned int buf_size,
+                       CONST tlv_ptr_entry_t * p_tlv_table);
 
-size_t tlv_write_ptr (void * p_dest,
-                      unsigned int dest_size,
-                      CONST tlv_ptr_entry_t * p_tlv_table);
+size_t tlv_encode_ptr (void * p_dest,
+                       unsigned int dest_size,
+                       CONST tlv_ptr_entry_t * p_tlv_table);
 
 #endif /* TLV_PTR_H */
 
