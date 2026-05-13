@@ -1,7 +1,7 @@
 # TLV-Parser README
 
 ## Notes from a Human
-Github Copilot created the tests and the bulk of this README "Description" section, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version has now been renamed to tlv_parse_ptr() and tlv_write_ptr() since there is now a second method. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it. I needed this for a new project and decided to just present both.
+Github Copilot created the tests and the bulk of this README "Description" section, but I wrote the original TLV parser. My first version used variable pointers to know where to copy data read from the TLV buffer. That version uses `tlv_decode_ptr()` and `tlv_encode_ptr()`. Copilot assisted in creating a version that is based on using a structure and offsets to the elements inside of it, using `tlv_decode_offset()` and `tlv_encode_offset()`. I needed this for a new project and decided to just present both.
 
 * In order to compile this on the CCS PCD compiler for PIC24, the "const" references have to be disabled. To make this easier to do, the header files now have a "#define CONST" that can be enabled or disabled.
 * For using on the CCS PCD PIC24 compiler, version 5.123 has an issue with comparing values that were passed in to a function in a structure. A workaround has been applied to this file.
@@ -166,19 +166,19 @@ make clean
 From `tlv_ptr.h` and `tlv_struct.h`:
 
 ```c
-size_t tlv_parse_ptr (const void *p_buf, unsigned int buf_size,
-                      const tlv_ptr_entry_t *p_tlv_table);
+size_t tlv_decode_ptr (const void *p_buf, unsigned int buf_size,
+                       const tlv_ptr_entry_t *p_tlv_table);
 
-size_t tlv_parse_struct (const void *p_buf, unsigned int buf_size,
-                         const tlv_offset_entry_t *p_tlv_table,
-                         void *p_struct);
+size_t tlv_decode_offset (const void *p_buf, unsigned int buf_size,
+                          const tlv_offset_entry_t *p_tlv_table,
+                          void *p_struct);
 
-size_t tlv_write_ptr (void *p_dest, unsigned int dest_size,
-                      const tlv_ptr_entry_t *p_tlv_table);
+size_t tlv_encode_ptr (void *p_dest, unsigned int dest_size,
+                       const tlv_ptr_entry_t *p_tlv_table);
 
-size_t tlv_write_struct (void *p_dest, unsigned int dest_size,
-                         const tlv_offset_entry_t *p_tlv_table,
-                         const void *p_struct);
+size_t tlv_encode_offset (void *p_dest, unsigned int dest_size,
+                          const tlv_offset_entry_t *p_tlv_table,
+                          const void *p_struct);
 ```
 
 Return value convention:
@@ -228,10 +228,10 @@ tlv_ptr_entry_t table[] =
 uint8_t buffer[64] = { 0 };
 
 // Write variables out to TLV buffer.
-size_t written = tlv_write_ptr (buffer, sizeof(buffer), table);
+size_t written = tlv_encode_ptr (buffer, sizeof(buffer), table);
 
 // Parse TLV buffer and load data into variables.
-size_t parsed  = tlv_parse_ptr (buffer, (unsigned int)written, table);
+size_t parsed  = tlv_decode_ptr (buffer, (unsigned int)written, table);
 ```
 
 ### Struct Table Example
@@ -257,10 +257,10 @@ const tlv_offset_entry_t table[] =
 };
 
 uint8_t buffer[64] = { 0 };
-size_t written = tlv_write_struct (buffer, sizeof(buffer), table, &msg);
+size_t written = tlv_encode_offset (buffer, sizeof(buffer), table, &msg);
 
 my_struct_t out = { 0 };
-size_t parsed = tlv_parse_struct (buffer, (unsigned int)written, table, &out);
+size_t parsed = tlv_decode_offset (buffer, (unsigned int)written, table, &out);
 ```
 
 ## Test Coverage Summary
