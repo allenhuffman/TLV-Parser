@@ -1,5 +1,5 @@
-#ifndef STRUCT_TABLE_TESTS_H
-#define STRUCT_TABLE_TESTS_H
+#ifndef PTR_TABLE_TESTS_H
+#define PTR_TABLE_TESTS_H
 
 /* Public macros: all #define items, constants and function-like macros */
 
@@ -14,8 +14,8 @@
 /*---------------------------------------------------------------------------*/
 // Prototypes
 /*---------------------------------------------------------------------------*/
-void run_struct_table_tests (void);
+void run_ptr_table_tests (void);
 
 #endif
 
-// End of struct_table_tests.h
+// End of ptr_table_tests.h

@@ -132,8 +132,8 @@ Shared helpers are:
 - `tlv_struct.c`: Struct-offset parser/writer implementation.
 - `crc16.c`, `crc16.h`: CRC-16/XMODEM routines.
 - `buf.c`, `buf.h`: Byte/word read/write helpers.
-- `ptr_table_tests.c`: Pointer-table test suite.
-- `struct_table_tests.c`: Struct-table test suite.
+- `tests/ptr_table_tests.c`: Pointer-table test suite.
+- `tests/struct_table_tests.c`: Struct-table test suite.
 - `main.c`: Test runner entry point.
 - `Makefile`: Build and run targets.
 

@@ -23,8 +23,8 @@
 #include <stdio.h>
 
 // Other headers.
-#include "ptr_table_tests.h"
-#include "struct_table_tests.h"
+#include "tests/ptr_table_tests.h"
+#include "tests/struct_table_tests.h"
 
 /*---------------------------------------------------------------------------*/
 // Functions
