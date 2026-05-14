@@ -23,6 +23,8 @@
 #include <stdio.h>
 
 // Other headers.
+#include "eeprom/eeprom_sim.h"
+
 #include "tests/ptr_table_tests.h"
 #include "tests/struct_table_tests.h"
 
@@ -36,6 +38,12 @@ int main (void)
 
     run_ptr_table_tests ();
     run_struct_table_tests ();
+
+    // Usage simulation:
+    // size_t eeprom_size = eeprom_get_size ();
+    // printf ("EEPROM size: %zu bytes\n", eeprom_size);
+    // eeprom_erase (0, eeprom_size);
+    // eeprom_dump (0, 32); // Dump the first 32 bytes of the EEPROM after erasing.
 
     return 0;
 }

@@ -1,13 +1,13 @@
 # Created by Github Copilot.
 CC ?= cc
-CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -O0 -g -I. -Itests
+CFLAGS ?= -std=c11 -Wall -Wextra -Wpedantic -O0 -g -I. -Itests -Ieeprom
 LDFLAGS ?=
 DEPFLAGS ?= -MMD -MP
 STRICT_WARNINGS ?= -Wshadow -Wconversion -Wsign-conversion -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wformat=2 -Wundef -Wwrite-strings
 STRICT_CFLAGS ?= $(CFLAGS) $(STRICT_WARNINGS) -Werror
 
 TARGET := tlv_test
-SRCS := $(wildcard *.c) $(wildcard tests/*.c)
+SRCS := $(wildcard *.c) $(wildcard tests/*.c) $(wildcard eeprom/*.c)
 OBJS := $(SRCS:.c=.o)
 DEPS := $(OBJS:.o=.d)
 
