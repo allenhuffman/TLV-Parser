@@ -16,13 +16,16 @@
 #ifndef TLV_STRUCT_H
 #define TLV_STRUCT_H
 
-/* System headers */
-
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stddef.h>
 #include <stdint.h>
 
 
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 
 // CCS PCD compiler for PIC24 handles const differently that standard C
 // compilers. For environments like that, this macro can be modified to
@@ -35,7 +38,9 @@
 #define TLVSTRUCTENTRY(n,s,v) { n, sizeof(((s *)0)->v), offsetof(s, v) }
 #define TLVSTRUCTENTRYEND     { 0, 0, 0 }
 
-/* Public structs: concrete data layouts used by this module */
+/*---------------------------------------------------------------------------*/
+// Public structs: concrete data layouts used by this module
+/*---------------------------------------------------------------------------*/
 
 // This structure is used to define a TLV table that contains offsets to
 // where elements are within a structure that will be loaded with value data.
@@ -47,7 +52,9 @@ typedef struct
 } tlv_offset_entry_t;
 
 
-/* Public function prototypes */
+/*---------------------------------------------------------------------------*/
+// Public function prototypes
+/*---------------------------------------------------------------------------*/
 
 size_t tlv_decode_offset (CONST void * p_buf,
                           unsigned int buf_size,
