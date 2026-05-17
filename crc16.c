@@ -17,18 +17,26 @@
  * @todo None
  */
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stddef.h> // size_t
 #include <stdint.h> // uint16_t
 
-/* This module's header (must be first among project headers) */
+/*---------------------------------------------------------------------------*/
+// This module's header (must be first among project headers)
+/*---------------------------------------------------------------------------*/
 #include "crc16.h"
 
-/* Private function prototypes */
+/*---------------------------------------------------------------------------*/
+// Private function prototypes
+/*---------------------------------------------------------------------------*/
 static uint16_t crc16_update(uint8_t in_byte, uint16_t crc_running);
 static uint16_t crc16_update_bytes(CONST uint8_t * p_bytes, size_t length, uint16_t crc_running);
 
-/* Public function definitions */
+/*---------------------------------------------------------------------------*/
+// Public function definitions
+/*---------------------------------------------------------------------------*/
 
 /**
  * @brief Calculate CRC over a buffer.
@@ -93,7 +101,6 @@ crc16_update (uint8_t in_byte, uint16_t crc_running)
 
     return crc_running;
 }
-
 
 
 /**

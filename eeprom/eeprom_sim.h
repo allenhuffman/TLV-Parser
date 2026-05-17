@@ -17,19 +17,31 @@
 #ifndef EEPROM_SIM_H
 #define EEPROM_SIM_H
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stdbool.h>
 #include <stdint.h>
 
-/* External module headers */
+/*---------------------------------------------------------------------------*/
+// External module headers
+/*---------------------------------------------------------------------------*/
 
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 
-/* Public constants: typed, debugger-visible constants (prefer static const) */
+/*---------------------------------------------------------------------------*/
+// Public constants: typed, debugger-visible constants (prefer static const)
+/*---------------------------------------------------------------------------*/
 
-/* Public typedefs: type aliases and opaque handles   */
+/*---------------------------------------------------------------------------*/
+// Public typedefs: type aliases and opaque handles
+/*---------------------------------------------------------------------------*/
 
-/* Public enums */
+/*---------------------------------------------------------------------------*/
+// Public enums
+/*---------------------------------------------------------------------------*/
 typedef enum
 {
     EEPROM_OK = 0,
@@ -40,15 +52,21 @@ typedef enum
     EEPROM_ERR_VERIFY
 } eeprom_status_t;
 
-/* Public structs: concrete data layouts used by this module */
+/*---------------------------------------------------------------------------*/
+// Public structs: concrete data layouts used by this module
+/*---------------------------------------------------------------------------*/
 
-/* Public variables */
+/*---------------------------------------------------------------------------*/
+// Public variables
+/*---------------------------------------------------------------------------*/
 // extern uint8_t    g_counter;        /* global */
 // extern uint8_t  * gp_led_reg;       /* global pointer */
 // extern uint8_t ** gpp_vector_table; /* global pointer to pointer */
 // extern bool       gb_done_yet;      /* global boolean */
 
-/* Public function prototypes */
+/*---------------------------------------------------------------------------*/
+// Public function prototypes
+/*---------------------------------------------------------------------------*/
 eeprom_status_t eeprom_write(uint16_t address, const uint8_t *p_data, size_t length);
 eeprom_status_t eeprom_read(uint16_t address, uint8_t *p_data, size_t length);
 

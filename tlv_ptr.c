@@ -17,21 +17,29 @@
  * @todo Consider: Add ability to have same type map to different lengths.
  */
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <inttypes.h> // uintptr_t
 #include <stdbool.h>  // for bool/true/false
 #include <stddef.h>   // for NULL
 #include <stdio.h>    // for printf
 #include <string.h>   // for memcpy ()
 
-/* This module's header (must be first among project headers) */
+/*---------------------------------------------------------------------------*/
+// This module's header (must be first among project headers)
+/*---------------------------------------------------------------------------*/
 #include "tlv_ptr.h"
 
-/* External module headers */
+/*---------------------------------------------------------------------------*/
+// External module headers
+/*---------------------------------------------------------------------------*/
 #include "crc16.h"
 #include "buf.h"
 
-/* Private macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Private macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 // 0 = No debug messages, 1 = Debug messages, 2 = Even more debug messages.
 #define DEBUG_TLV 0
 
@@ -45,7 +53,9 @@
 #define TLV_CRC_SIZE      (sizeof(uint16_t))
 
 
-/* Public function definitions */
+/*---------------------------------------------------------------------------*/
+// Public function definitions
+/*---------------------------------------------------------------------------*/
 
 /**
  * @brief Read and parse TLV data from a buffer and copy into variables.

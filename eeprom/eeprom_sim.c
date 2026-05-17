@@ -17,17 +17,25 @@
  * @todo Add eeprom_erase and maybe get size?
  */
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdio.h>
 
-/* This module's header (must be first among project headers) */
+/*---------------------------------------------------------------------------*/
+// This module's header (must be first among project headers)
+/*---------------------------------------------------------------------------*/
 #include "eeprom_sim.h"
 
-/* External module headers */
+/*---------------------------------------------------------------------------*/
+// External module headers
+/*---------------------------------------------------------------------------*/
 
 
-/* Public data definitions */
+/*---------------------------------------------------------------------------*/
+// Public data definitions
+/*---------------------------------------------------------------------------*/
 /* In the case of a variable name requiring multiple of the above prefixes, the
    order of their inclusion before the first underscore shall be
    [g][p|pp][b|h]. */
@@ -36,36 +44,52 @@
 // uint8_t ** gpp_vector_table = NULL;  /* global pointer to pointer */
 // bool       gb_done_yet      = false; /* global boolean */
 
-/* Private macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Private macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 #define EEPROM_SIZE_BYTES (8192U)
 
-/* Private constants: typed, debugger-visible constants (prefer static const) */
+/*---------------------------------------------------------------------------*/
+// Private constants: typed, debugger-visible constants (prefer static const)
+/*---------------------------------------------------------------------------*/
 /* Array bounds at file scope must use an integer constant expression in C. */
 
-/* Private typedefs: type aliases and opaque handles  */
+/*---------------------------------------------------------------------------*/
+// Private typedefs: type aliases and opaque handles
+/*---------------------------------------------------------------------------*/
 //typedef struct template_context template_context_t;
 
-/* Private enums */
+/*---------------------------------------------------------------------------*/
+// Private enums
+/*---------------------------------------------------------------------------*/
 // typedef enum
 // {
 //     TEMPLATE_STATE_IDLE,
 //     TEMPLATE_STATE_BUSY
 // } template_state_t;
 
-/* Private structs: concrete data layouts used by this module */
+/*---------------------------------------------------------------------------*/
+// Private structs: concrete data layouts used by this module
+/*---------------------------------------------------------------------------*/
 // typedef struct
 // {
 //     uint8_t  id;
 //     uint16_t counter;
 // } template_context_t;
 
-/* Private static variables */
+/*---------------------------------------------------------------------------*/
+// Private static variables
+/*---------------------------------------------------------------------------*/
 static uint8_t eeprom_memory[EEPROM_SIZE_BYTES] = { 0 }; /* Simulated EEPROM memory */
 
-/* Private function prototypes */
+/*---------------------------------------------------------------------------*/
+// Private function prototypes
+/*---------------------------------------------------------------------------*/
 //static void template_reset_context(void);
 
-/* Public function definitions */
+/*---------------------------------------------------------------------------*/
+// Public function definitions
+/*---------------------------------------------------------------------------*/
 
 /**
  * @brief Write data to the EEPROM.
@@ -220,7 +244,10 @@ eeprom_status_t eeprom_dump (uint16_t address, size_t length)
 }
 
 
-/* Private function definitions */
+/*---------------------------------------------------------------------------*/
+// Private function definitions
+/*---------------------------------------------------------------------------*/
+
 // static void
 // template_reset_context (void)
 // {

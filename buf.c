@@ -17,14 +17,20 @@
  * @todo Possibly have put return count of how many bytes were written.
  */
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stdint.h>
 #include <string.h> // for memset(), memcpy()
 
-/* This module's header (must be first among project headers) */
+/*---------------------------------------------------------------------------*/
+// This module's header (must be first among project headers) */
+/*---------------------------------------------------------------------------*/
 #include "buf.h"
 
-/* Public function definitions */
+/*---------------------------------------------------------------------------*/
+// Public function definitions
+/*---------------------------------------------------------------------------*/
 
 /**
  * @brief Read data from a buffer and advance the pointer.
@@ -56,6 +62,7 @@ buf_read_u8 (CONST uint8_t **pp_read)
     *pp_read += sizeof (value);
     return value;
 }
+
 
 /**
  * @brief Read data from a buffer and advance the pointer.

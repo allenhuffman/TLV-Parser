@@ -16,10 +16,14 @@
 #ifndef BUF_H
 #define BUF_H
 
-/* System headers */
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stdint.h>
 
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 
 // CCS PCD compiler for PIC24 handles const differently that standard C
 // compilers. For environments like that, this macro can be modified to
@@ -29,7 +33,9 @@
     //#define CONST
 #endif
 
-/* Public function prototypes */
+/*---------------------------------------------------------------------------*/
+// Public function prototypes
+/*---------------------------------------------------------------------------*/
 void     buf_read_data(CONST uint8_t ** pp_read, void *p_data, unsigned int data_size);
 uint8_t  buf_read_u8(CONST uint8_t ** pp_read);
 uint16_t buf_read_u16(CONST uint8_t ** pp_read);

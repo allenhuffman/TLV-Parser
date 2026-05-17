@@ -16,12 +16,15 @@
 #ifndef CRC16_H
 #define CRC16_H
 
-/* System headers */
-
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stddef.h> // size_t
 #include <stdint.h> // uint8_t, uint16_t
 
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 // CCS PCD compiler for PIC24 handles const differently that standard C
 // compilers. For environments like that, this macro can be modified to
 // remove the use of const in this module.
@@ -30,7 +33,9 @@
     //#define CONST
 #endif
 
-/* Public function prototypes */
+/*---------------------------------------------------------------------------*/
+// Public function prototypes
+/*---------------------------------------------------------------------------*/
 uint16_t crc16_compute(CONST void * p_buf, size_t buf_size);
 
 

@@ -16,13 +16,16 @@
 #ifndef TLV_PTR_H
 #define TLV_PTR_H
 
-/* System headers */
-
+/*---------------------------------------------------------------------------*/
+// System headers
+/*---------------------------------------------------------------------------*/
 #include <stddef.h>
 #include <stdint.h>
 
 
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 
 // CCS PCD compiler for PIC24 handles const differently that standard C
 // compilers. For environments like that, this macro can be modified to
@@ -35,8 +38,9 @@
 #define TLVPTRENTRY(n,v)   { n, sizeof(v), &v }
 #define TLVPTRENTRYEND     { 0, 0, NULL }
 
-
-/* Public macros: all #define items, constants and function-like macros */
+/*---------------------------------------------------------------------------*/
+// Public macros: all #define items, constants and function-like macros
+/*---------------------------------------------------------------------------*/
 
 // This structure is used to define a TLV table that contains pointers to
 // variables that will be loaded with value data.
@@ -47,8 +51,9 @@ typedef struct
    void     *value;
 } tlv_ptr_entry_t;
 
-
-/* Public function prototypes */
+/*---------------------------------------------------------------------------*/
+// Public function prototypes
+/*---------------------------------------------------------------------------*/
 
 size_t tlv_decode_ptr (CONST void * p_buf,
                        unsigned int buf_size,
